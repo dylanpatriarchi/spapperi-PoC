@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Robot, CheckCircle, PaperPlaneRight, ArrowLeft } from "@phosphor-icons/react";
+import { Robot, CheckCircle, PaperPlaneRight, ArrowLeft, XCircle } from "@phosphor-icons/react";
 import Link from 'next/link';
 import Navbar from "@/components/Navbar";
 
@@ -20,6 +20,10 @@ export default function ConfiguratorPage() {
         }
     };
 
+    const closeChat = () => {
+        setChatStarted(false);
+    };
+
     const sendMessage = () => {
         if (!inputValue.trim()) return;
         setMessages(prev => [...prev, { role: 'user', text: inputValue }]);
@@ -32,7 +36,20 @@ export default function ConfiguratorPage() {
 
     return (
         <main className="bg-white min-h-screen text-spapperi-black font-sans relative overflow-hidden">
-            <Navbar />
+            {/* Navbar only visible when chat is NOT started */}
+            <AnimatePresence>
+                {!chatStarted && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3 }}
+                        className="fixed top-0 left-0 right-0 z-50"
+                    >
+                        <Navbar />
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             <AnimatePresence mode="wait">
                 {!chatStarted ? (
@@ -116,10 +133,19 @@ export default function ConfiguratorPage() {
                         key="chat"
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
                         transition={{ duration: 0.5, ease: "circOut" }}
-                        className="h-screen pt-24 pb-8 px-4 flex flex-col max-w-4xl mx-auto"
+                        className="h-screen pt-12 pb-8 px-4 flex flex-col max-w-4xl mx-auto relative"
                     >
-                        <div className="flex-1 overflow-y-auto space-y-6 mb-8 scrollbar-hide">
+                        {/* Close Button */}
+                        <button
+                            onClick={closeChat}
+                            className="absolute top-8 right-8 text-gray-400 hover:text-spapperi-red transition-colors z-50 p-2"
+                        >
+                            <XCircle size={40} weight="duotone" />
+                        </button>
+
+                        <div className="flex-1 overflow-y-auto space-y-6 mb-8 scrollbar-hide pt-12">
                             {messages.map((msg, i) => (
                                 <motion.div
                                     key={i}
