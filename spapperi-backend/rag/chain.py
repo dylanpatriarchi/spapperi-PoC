@@ -1,22 +1,23 @@
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.output_parsers import StrOutputParser
+from langchain_core.output_parsers import JsonOutputParser
+from langchain_core.pydantic_v1 import BaseModel, Field
 
 # Initialize LLM
 llm = ChatOpenAI(model="gpt-4-turbo-preview", temperature=0)
 
-# Prompt for the State Machine
+# Extraction Prompt
 system_prompt = """
-You are the Spapperi AI Configurator Agent.
-Your goal is to guide the user through the configuration process defined in the technical flow.
+You are an expert extraction assistent for an agricultural machinery configurator.
+Your goal is to extract the specific value requested by the system from the user's input.
 
-Current Phase: {phase}
-Collected Data: {config}
+Field to extract: {field_name}
+Current Configuration Context: {config}
 
-Follow these rules:
-1. Only ask ONE question at a time.
-2. Validate the user's input against the requirements of the current step.
-3. If they ask a technical question, answer it using your knowledge base, then gently return to the flow.
+Rules:
+1. Return ONLY a JSON object with a single key "value". or "value": null if not found.
+2. If the user input is ambiguous, return null.
+3. Normalize the data (e.g., "50 centimetri" -> 50).
 """
 
 prompt = ChatPromptTemplate.from_messages([
@@ -24,4 +25,4 @@ prompt = ChatPromptTemplate.from_messages([
     ("user", "{input}")
 ])
 
-chain = prompt | llm | StrOutputParser()
+extractor_chain = prompt | llm | JsonOutputParser()

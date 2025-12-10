@@ -38,19 +38,33 @@ class ChatRequest(BaseModel):
     message: str
     conversation_id: str = None
 
+from langchain_core.messages import HumanMessage
+from rag.graph import app as agent_app
+
 @app.post("/api/chat")
 async def chat_endpoint(request: ChatRequest):
     """
     Main Chat Endpoint.
-    1. Loads state from Postgres (using conversation_id).
-    2. Runs LangGraph.
-    3. Saves new state.
-    4. Returns AI response.
     """
-    # Placeholder for graph invocation
-    # In real impl: response = app.invoke(inputs, config=thread_config)
+    # 1. Prepare Input
+    initial_state = {
+        "messages": [HumanMessage(content=request.message)],
+        # In a real app with checkpointer, "config" comes from DB. 
+        # Here we need to pass it or rely on persistence.
+        # For POC: We assume stateless or basic invocation.
+    }
+
+    # 2. Run Graph
+    result = agent_app.invoke(initial_state)
+    
+    # 3. Extract Response
+    bot_messages = result.get("messages", [])
+    last_bot_msg = bot_messages[-1].content if bot_messages else "No response."
+    
+    # 4. Save Conversation ID (Mock)
     
     return {
-        "response": f"Echo: {request.message}. (Backend is reachable, logic WIP)",
-        "conversation_id": request.conversation_id or "new-uuid"
+        "response": last_bot_msg,
+        "conversation_id": request.conversation_id or "new-uuid",
+        "debug_state": result.get("config") # returning config for debugging
     }

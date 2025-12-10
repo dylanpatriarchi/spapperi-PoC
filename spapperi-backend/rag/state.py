@@ -46,6 +46,6 @@ class AgentState(TypedDict):
     The Main Graph State.
     """
     messages: Annotated[List[BaseMessage], operator.add]
-    config: ConfigurationState
+    user_config: ConfigurationState # Renamed from 'config' to avoid LangGraph collision
     current_phase: str # e.g., "phase_1_crop", "phase_2_layout"
     next_step: str # instruction for the LLM on what to ask next
