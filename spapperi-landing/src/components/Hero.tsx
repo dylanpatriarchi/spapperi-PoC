@@ -48,11 +48,11 @@ export default function Hero() {
                         Innovazione pura.
                     </p>
 
-                    <div className="flex flex-col sm:flex-row gap-0">
-                        <button className="bg-spapperi-red text-white px-10 py-5 font-bold hover:bg-black transition-all hover:shadow-2xl text-center cursor-pointer uppercase tracking-widest text-sm rounded-l-full rounded-r-none">
+                    <div className="flex flex-col sm:flex-row gap-4 sm:gap-0 w-full sm:w-auto">
+                        <button className="bg-spapperi-red text-white px-8 py-4 sm:px-10 sm:py-5 font-bold hover:bg-black transition-all hover:shadow-2xl text-center cursor-pointer uppercase tracking-widest text-xs sm:text-sm rounded-full sm:rounded-r-none sm:rounded-l-full w-full sm:w-auto">
                             Specifiche Tecniche
                         </button>
-                        <button className="group border-2 border-l-0 border-neutral-200 text-neutral-800 px-10 py-5 font-bold hover:bg-neutral-50 transition-all flex items-center justify-center gap-2 cursor-pointer uppercase tracking-widest text-sm bg-white rounded-r-full rounded-l-none">
+                        <button className="group border-2 sm:border-l-0 border-neutral-200 text-neutral-800 px-8 py-4 sm:px-10 sm:py-5 font-bold hover:bg-neutral-50 transition-all flex items-center justify-center gap-2 cursor-pointer uppercase tracking-widest text-xs sm:text-sm bg-white rounded-full sm:rounded-l-none sm:rounded-r-full w-full sm:w-auto">
                             <span>Datasheet</span>
                             <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                         </button>

@@ -94,8 +94,8 @@ export default function TechSpecs() {
                 </div>
 
                 <div className="mt-20 text-center">
-                    <button className="bg-spapperi-red text-white px-12 py-5 font-bold text-lg uppercase tracking-widest hover:bg-spapperi-black hover:shadow-xl transition-all duration-300 shadow-lg cursor-pointer">
-                        Scarica PDF [ 2.4 MB ]
+                    <button className="bg-spapperi-red text-white px-8 py-4 sm:px-12 sm:py-5 font-bold text-sm sm:text-lg uppercase tracking-widest hover:bg-spapperi-black hover:shadow-xl transition-all duration-300 shadow-lg cursor-pointer whitespace-nowrap">
+                        Scarica PDF <span className="hidden sm:inline ml-2">[ 2.4 MB ]</span>
                     </button>
                 </div>
             </div>

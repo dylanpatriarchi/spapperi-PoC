@@ -5,9 +5,9 @@ export default function VideoSection() {
         <section className="relative w-full h-[80vh] bg-white overflow-hidden flex items-center justify-center">
 
             {/* Container - No shadows, no rounding for seamless integration */}
-            <div className="relative w-full h-full max-w-full mx-auto overflow-hidden">
+            <div className="relative w-full h-full max-w-full mx-auto overflow-hidden bg-white">
                 <iframe
-                    className="w-full h-full object-cover scale-125 pointer-events-none"
+                    className="w-full h-full object-cover scale-[3.5] md:scale-125 pointer-events-none"
                     src="https://www.youtube.com/embed/UvoO500jYSs?autoplay=1&mute=1&controls=0&loop=1&playlist=UvoO500jYSs&rel=0&showinfo=0&modestbranding=1&iv_load_policy=3"
                     title="Spapperi TC12 AM"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

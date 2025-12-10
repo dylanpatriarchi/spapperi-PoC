@@ -54,17 +54,17 @@ export default function HorizontalScrollFeatures() {
 
                         {/* Top: Number & Icon */}
                         <div className="flex justify-between items-start">
-                            <span className="font-heading text-9xl font-bold text-gray-100 group-hover:text-gray-200 transition-colors -ml-4 -mt-4">
+                            <span className="font-heading text-6xl md:text-9xl font-bold text-gray-100 group-hover:text-gray-200 transition-colors -ml-4 -mt-4">
                                 0{i + 1}
                             </span>
-                            <div className="p-6 bg-red-50 text-spapperi-red rounded-full group-hover:scale-110 transition-transform duration-500">
+                            <div className="p-4 md:p-6 bg-red-50 text-spapperi-red rounded-full group-hover:scale-110 transition-transform duration-500">
                                 {f.icon}
                             </div>
                         </div>
 
                         {/* Bottom: Content */}
                         <div className="mt-auto">
-                            <h3 className="text-5xl md:text-6xl font-heading font-bold text-spapperi-black mb-8 uppercase tracking-tight leading-none group-hover:translate-x-2 transition-transform duration-500">
+                            <h3 className="text-3xl md:text-6xl font-heading font-bold text-spapperi-black mb-4 md:mb-8 uppercase tracking-tight leading-none group-hover:translate-x-2 transition-transform duration-500">
                                 {f.title}
                             </h3>
                             <div className="w-24 h-1 bg-spapperi-red mb-8"></div>
