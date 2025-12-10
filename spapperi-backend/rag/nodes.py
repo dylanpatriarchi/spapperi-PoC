@@ -62,9 +62,22 @@ def node_manager(state: AgentState):
     
     print(f"--- Manager Node: Next Field is {next_field} ---")
     
-    question = QUESTIONS.get(next_field, "Configurazione Completata! Genero il PDF...")
+    technical_question_template = QUESTIONS.get(next_field, "Configurazione Completata! Genero il PDF...")
     
+    # Generate Natural Response using LLM
+    from .chain import generation_chain
+    last_user_msg = state["messages"][-1].content if state.get("messages") else "Start"
+    
+    try:
+        natural_question = generation_chain.invoke({
+            "last_user_message": last_user_msg,
+            "config": config,
+            "technical_question": technical_question_template
+        })
+    except Exception:
+        natural_question = technical_question_template # Fallback
+
     return {
         "next_step": next_field,
-        "messages": [AIMessage(content=question)]
+        "messages": [AIMessage(content=natural_question)]
     }

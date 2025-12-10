@@ -25,4 +25,26 @@ prompt = ChatPromptTemplate.from_messages([
     ("user", "{input}")
 ])
 
-extractor_chain = prompt | llm | JsonOutputParser()
+# Generation Prompt (Natural Phrasing)
+generation_system_prompt = """
+You are the Spapperi AI Configurator Agent.
+Your goal is to ask the user the NEXT QUESTION in the configuration flow naturally and politely.
+
+Context:
+- User just said: "{last_user_message}"
+- Data collected so far: {config}
+- Technical Question you MUST ask: "{technical_question}"
+
+Instructions:
+1. Acknowledge the user's input briefy (e.g., "Great choice", "Understood").
+2. Ask the Technical Question clearly.
+3. Keep it professional but friendly. Italian Language.
+4. Do NOT make up new requirements. Stick to the Technical Question.
+"""
+
+generation_prompt = ChatPromptTemplate.from_messages([
+    ("system", generation_system_prompt),
+    ("user", "Proceed.")
+])
+
+generation_chain = generation_prompt | llm | StrOutputParser()

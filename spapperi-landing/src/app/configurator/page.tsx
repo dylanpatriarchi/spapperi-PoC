@@ -9,10 +9,11 @@ import Navbar from "@/components/Navbar";
 export default function ConfiguratorPage() {
     const [hasConsented, setHasConsented] = useState(false);
     const [chatStarted, setChatStarted] = useState(false);
-    const [messages, setMessages] = useState<{ role: 'ai' | 'user', text: string }[]>([
+    const [messages, setMessages] = useState<Array<{ role: string, text: string }>>([
         { role: 'ai', text: 'Ciao! Sono l\'IA di Spapperi. Posso aiutarti a configurare la tua trapiantatrice ideale. Per iniziare, dimmi: che tipo di coltura devi trapiantare?' }
     ]);
     const [inputValue, setInputValue] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const startChat = () => {
         if (hasConsented) {
@@ -24,14 +25,36 @@ export default function ConfiguratorPage() {
         setChatStarted(false);
     };
 
-    const sendMessage = () => {
+    const sendMessage = async () => {
         if (!inputValue.trim()) return;
-        setMessages(prev => [...prev, { role: 'user', text: inputValue }]);
+
+        const userMsg = inputValue;
+        setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
         setInputValue('');
-        // Mock AI response
-        setTimeout(() => {
-            setMessages(prev => [...prev, { role: 'ai', text: 'Ottimo. E qual è la distanza interfila che desideri mantenere?' }]);
-        }, 1000);
+        setIsLoading(true);
+
+        try {
+            // Securely call the Next.js API Proxy which talks to the Python Backend
+            const res = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: userMsg,
+                    // conversation_id: storedId // Persistence needed in future steps
+                })
+            });
+
+            if (!res.ok) throw new Error("API Error");
+
+            const data = await res.json();
+            setMessages(prev => [...prev, { role: 'ai', text: data.response }]);
+
+        } catch (error) {
+            console.error(error);
+            setMessages(prev => [...prev, { role: 'ai', text: "Mi dispiace, c'è stato un problema di comunicazione con il server." }]);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
