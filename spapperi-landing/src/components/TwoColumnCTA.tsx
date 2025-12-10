@@ -1,6 +1,7 @@
 'use client';
 
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowRight, Robot, Wrench } from "@phosphor-icons/react";
 
 export default function TwoColumnCTA() {
@@ -9,7 +10,7 @@ export default function TwoColumnCTA() {
             <div className="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 h-[600px]">
 
                 {/* Card 1: AI Configurator */}
-                <div className="group relative w-full h-full rounded-2xl overflow-hidden cursor-pointer">
+                <Link href="/configurator" className="group relative w-full h-full rounded-2xl overflow-hidden cursor-pointer block">
                     <div className="absolute inset-0">
                         <Image
                             src="/banner_trapiantatrici.png"
@@ -35,7 +36,7 @@ export default function TwoColumnCTA() {
                             <ArrowRight size={24} />
                         </div>
                     </div>
-                </div>
+                </Link>
 
                 {/* Card 2: Spare Parts */}
                 <div className="group relative w-full h-full rounded-2xl overflow-hidden cursor-pointer">

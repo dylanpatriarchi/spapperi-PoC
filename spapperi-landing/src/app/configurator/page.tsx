@@ -1,0 +1,164 @@
+'use client';
+
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Robot, CheckCircle, PaperPlaneRight, ArrowLeft } from "@phosphor-icons/react";
+import Link from 'next/link';
+import Navbar from "@/components/Navbar";
+
+export default function ConfiguratorPage() {
+    const [hasConsented, setHasConsented] = useState(false);
+    const [chatStarted, setChatStarted] = useState(false);
+    const [messages, setMessages] = useState<{ role: 'ai' | 'user', text: string }[]>([
+        { role: 'ai', text: 'Ciao! Sono l\'IA di Spapperi. Posso aiutarti a configurare la tua trapiantatrice ideale. Per iniziare, dimmi: che tipo di coltura devi trapiantare?' }
+    ]);
+    const [inputValue, setInputValue] = useState('');
+
+    const startChat = () => {
+        if (hasConsented) {
+            setChatStarted(true);
+        }
+    };
+
+    const sendMessage = () => {
+        if (!inputValue.trim()) return;
+        setMessages(prev => [...prev, { role: 'user', text: inputValue }]);
+        setInputValue('');
+        // Mock AI response
+        setTimeout(() => {
+            setMessages(prev => [...prev, { role: 'ai', text: 'Ottimo. E qual è la distanza interfila che desideri mantenere?' }]);
+        }, 1000);
+    };
+
+    return (
+        <main className="bg-white min-h-screen text-spapperi-black font-sans relative overflow-hidden">
+            <Navbar />
+
+            <AnimatePresence mode="wait">
+                {!chatStarted ? (
+                    <motion.div
+                        key="intro"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20, filter: 'blur(10px)' }}
+                        transition={{ duration: 0.6, ease: "circOut" }}
+                        className="min-h-screen pt-32 md:pt-40 pb-12 flex flex-col px-6"
+                    >
+                        <div className="max-w-2xl w-full mx-auto">
+                            <Link href="/" className="inline-flex items-center gap-2 text-gray-400 hover:text-spapperi-red transition-colors mb-12 uppercase tracking-widest text-xs font-bold group">
+                                <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Torna alla Home
+                            </Link>
+
+                            <div className="mb-12">
+                                <div className="w-16 h-16 bg-gray-50 rounded-xl flex items-center justify-center mb-8">
+                                    <Robot size={32} weight="duotone" className="text-spapperi-red" />
+                                </div>
+                                <h1 className="text-5xl md:text-7xl font-heading font-bold tracking-tighter leading-[0.9] mb-8">
+                                    Spapperi<br /><span className="text-spapperi-red">AI Logic.</span>
+                                </h1>
+                                <p className="text-xl text-spapperi-black font-light leading-relaxed max-w-lg text-justify md:text-left">
+                                    Configura la tua macchina ideale dialogando con la nostra Intelligenza Artificiale.
+                                    Risparmia tempo e ottieni una soluzione su misura.
+                                </p>
+                            </div>
+
+                            <div className="bg-white p-8 rounded-2xl border border-gray-200 mb-12 shadow-sm">
+                                <h3 className="font-heading font-bold text-lg mb-6 uppercase tracking-wider text-spapperi-black">Istruzioni</h3>
+                                <ul className="space-y-4 text-spapperi-black font-medium mb-8">
+                                    <li className="flex items-start gap-3">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-spapperi-red mt-2.5 shrink-0"></div>
+                                        <span>L'IA ti farà domande sulle tue esigenze (coltura, terreno, dimensioni).</span>
+                                    </li>
+                                    <li className="flex items-start gap-3">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-spapperi-red mt-2.5 shrink-0"></div>
+                                        <span>Potrai scaricare la configurazione finale in PDF.</span>
+                                    </li>
+                                </ul>
+
+                                <div className="flex items-start gap-4 pt-6 border-t border-gray-100">
+                                    <div className="relative flex items-center pt-1">
+                                        <input
+                                            type="checkbox"
+                                            id="gdpr"
+                                            checked={hasConsented}
+                                            onChange={(e) => setHasConsented(e.target.checked)}
+                                            className="peer h-5 w-5 cursor-pointer appearance-none rounded border-2 border-gray-300 transition-all checked:border-spapperi-red checked:bg-spapperi-red hover:border-spapperi-red"
+                                        />
+                                        <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100 mt-0.5">
+                                            <CheckCircle size={12} weight="fill" />
+                                        </div>
+                                        {hasConsented && (
+                                            <CheckCircle size={20} weight="fill" className="absolute top-0.5 left-0 text-spapperi-red pointer-events-none" />
+                                        )}
+                                    </div>
+                                    <label htmlFor="gdpr" className="text-sm text-gray-500 hover:text-spapperi-black cursor-pointer select-none leading-relaxed transition-colors">
+                                        Accetto i <a href="#" className="font-bold underline text-spapperi-black hover:text-spapperi-red">Termini di Servizio</a> e la <a href="#" className="font-bold underline text-spapperi-black hover:text-spapperi-red">Privacy Policy</a>.
+                                    </label>
+                                </div>
+                            </div>
+
+                            <button
+                                onClick={startChat}
+                                disabled={!hasConsented}
+                                className={`group flex items-center gap-3 px-8 py-4 text-sm font-bold uppercase tracking-widest rounded-full transition-all duration-300
+                                    ${hasConsented
+                                        ? 'bg-spapperi-black text-white hover:bg-spapperi-red hover:gap-5'
+                                        : 'bg-gray-100 text-gray-300 cursor-not-allowed'
+                                    }`}
+                            >
+                                Avvia Chat
+                                <PaperPlaneRight size={18} weight="fill" />
+                            </button>
+                        </div>
+                    </motion.div>
+                ) : (
+                    <motion.div
+                        key="chat"
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.5, ease: "circOut" }}
+                        className="h-screen pt-24 pb-8 px-4 flex flex-col max-w-4xl mx-auto"
+                    >
+                        <div className="flex-1 overflow-y-auto space-y-6 mb-8 scrollbar-hide">
+                            {messages.map((msg, i) => (
+                                <motion.div
+                                    key={i}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                                >
+                                    <div className={`max-w-[80%] p-6 rounded-3xl text-lg font-medium leading-relaxed
+                                        ${msg.role === 'user'
+                                            ? 'bg-spapperi-red text-white rounded-br-none shadow-lg'
+                                            : 'bg-gray-100 text-gray-800 rounded-bl-none'
+                                        }`}
+                                    >
+                                        {msg.text}
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+
+                        <div className="relative">
+                            <input
+                                type="text"
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+                                placeholder="Scrivi qui..."
+                                className="w-full bg-white border-2 border-gray-100 rounded-full py-6 pl-8 pr-20 text-xl focus:outline-none focus:border-spapperi-red focus:shadow-xl transition-all"
+                                autoFocus
+                            />
+                            <button
+                                onClick={sendMessage}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 w-12 h-12 bg-spapperi-black text-white rounded-full flex items-center justify-center hover:bg-spapperi-red transition-colors"
+                            >
+                                <PaperPlaneRight size={24} weight="fill" />
+                            </button>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </main>
+    );
+}
