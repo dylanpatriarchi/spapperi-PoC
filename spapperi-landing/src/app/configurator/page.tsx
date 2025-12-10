@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Robot, CheckCircle, PaperPlaneRight, ArrowLeft, XCircle } from "@phosphor-icons/react";
 import Link from 'next/link';
@@ -14,6 +14,13 @@ export default function ConfiguratorPage() {
     ]);
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [conversationId, setConversationId] = useState<string | null>(null);
+
+    // Load conversation ID from local storage on mount
+    useEffect(() => {
+        const storedId = localStorage.getItem('spapperi_conversation_id');
+        if (storedId) setConversationId(storedId);
+    }, []);
 
     const startChat = () => {
         if (hasConsented) {
@@ -40,7 +47,7 @@ export default function ConfiguratorPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     message: userMsg,
-                    // conversation_id: storedId // Persistence needed in future steps
+                    conversation_id: conversationId // Send stored ID or null
                 })
             });
 
@@ -48,6 +55,12 @@ export default function ConfiguratorPage() {
 
             const data = await res.json();
             setMessages(prev => [...prev, { role: 'ai', text: data.response }]);
+
+            // Persist new ID if generated
+            if (data.conversation_id && data.conversation_id !== conversationId) {
+                setConversationId(data.conversation_id);
+                localStorage.setItem('spapperi_conversation_id', data.conversation_id);
+            }
 
         } catch (error) {
             console.error(error);

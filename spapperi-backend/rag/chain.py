@@ -1,6 +1,6 @@
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.output_parsers import JsonOutputParser
+from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
 from langchain_core.pydantic_v1 import BaseModel, Field
 
 # Initialize LLM
@@ -24,6 +24,8 @@ prompt = ChatPromptTemplate.from_messages([
     ("system", system_prompt),
     ("user", "{input}")
 ])
+
+extractor_chain = prompt | llm | JsonOutputParser()
 
 # Generation Prompt (Natural Phrasing)
 generation_system_prompt = """
