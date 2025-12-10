@@ -1,0 +1,11 @@
+services:
+  frontend:
+    build:
+      context: ./spapperi-landing
+      dockerfile: Dockerfile
+    container_name: spapperi-frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
