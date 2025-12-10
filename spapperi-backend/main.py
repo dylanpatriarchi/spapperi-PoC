@@ -38,9 +38,11 @@ async def health_check():
 async def root():
     return {"message": "Spapperi RAG Backend is running securely."}
 
+from typing import Optional
+
 class ChatRequest(BaseModel):
     message: str
-    conversation_id: str = None
+    conversation_id: Optional[str] = None
 
 from langchain_core.messages import HumanMessage
 from rag.graph import app as agent_app

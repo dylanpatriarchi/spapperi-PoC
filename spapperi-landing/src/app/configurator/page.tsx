@@ -9,9 +9,7 @@ import Navbar from "@/components/Navbar";
 export default function ConfiguratorPage() {
     const [hasConsented, setHasConsented] = useState(false);
     const [chatStarted, setChatStarted] = useState(false);
-    const [messages, setMessages] = useState<Array<{ role: string, text: string }>>([
-        { role: 'ai', text: 'Ciao! Sono l\'IA di Spapperi. Posso aiutarti a configurare la tua trapiantatrice ideale. Per iniziare, dimmi: che tipo di coltura devi trapiantare?' }
-    ]);
+    const [messages, setMessages] = useState<Array<{ role: string, text: string }>>([]);
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [conversationId, setConversationId] = useState<string | null>(null);
@@ -25,6 +23,46 @@ export default function ConfiguratorPage() {
     const startChat = () => {
         if (hasConsented) {
             setChatStarted(true);
+            // If no messages, fetch the greeting
+            if (messages.length === 0) {
+                fetchGreeting();
+            }
+        }
+    };
+
+    const fetchGreeting = async () => {
+        setIsLoading(true);
+        try {
+            // We send a hidden "Start" signal or just empty message to trigger the Agent's manager node
+            // But the agent reacts to *last user message*.
+            // If we send "Ciao" or "Start" hiddenly, the agent will reply.
+            // Let's send a specific "BEGIN_SESSION" plain text, or rely on the backend recognizing a new session.
+            // For now, let's send "Ciao" as a hidden bootstrap message to get the Phase 1 question.
+
+            const res = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: "Ciao",
+                    conversation_id: conversationId
+                })
+            });
+
+            if (!res.ok) throw new Error("API Error");
+            const data = await res.json();
+
+            setMessages([{ role: 'ai', text: data.response }]);
+
+            if (data.conversation_id && data.conversation_id !== conversationId) {
+                setConversationId(data.conversation_id);
+                localStorage.setItem('spapperi_conversation_id', data.conversation_id);
+            }
+
+        } catch (e) {
+            console.error(e);
+            setMessages([{ role: 'ai', text: "Errore di connessione. Riprova più tardi." }]);
+        } finally {
+            setIsLoading(false);
         }
     };
 
