@@ -72,7 +72,7 @@ export default function Footer() {
 
                 {/* Bottom: Copyright */}
                 <div className="border-t border-gray-100 pt-12 flex flex-col md:flex-row justify-between items-center text-gray-400 font-sans text-sm tracking-wide">
-                    <p>&copy; 2025 Dylan Patriarch. All Rights Reserved.</p>
+                    <p>&copy; 2025 Dylan Patriarchi. All Rights Reserved.</p>
                     <div className="flex gap-8 mt-4 md:mt-0">
                         <a href="#" className="hover:text-spapperi-black transition-colors">Privacy Policy</a>
                         <a href="#" className="hover:text-spapperi-black transition-colors">Cookie Policy</a>

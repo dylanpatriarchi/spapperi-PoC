@@ -21,9 +21,7 @@ export default function VideoSection() {
                 {/* Bottom Fade */}
                 <div className="absolute bottom-0 left-0 w-full h-48 bg-gradient-to-t from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
 
-                {/* Side Fades - Essential to hide 16:9 edges on wider screens */}
-                <div className="absolute top-0 left-0 w-48 h-full bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none hidden md:block"></div>
-                <div className="absolute top-0 right-0 w-48 h-full bg-gradient-to-l from-white via-white/80 to-transparent z-10 pointer-events-none hidden md:block"></div>
+
             </div>
 
         </section>
