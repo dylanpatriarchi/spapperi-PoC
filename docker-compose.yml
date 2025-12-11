@@ -22,6 +22,9 @@ services:
     container_name: spapperi-backend
     ports:
       - "8000:8000"
+    volumes:
+      - ./source:/app/source
+      - ./spapperi-backend:/app
     environment:
       - DATABASE_URL=postgresql://postgres:password@db:5432/spapperi
       - OPENAI_API_KEY=${OPENAI_API_KEY}
