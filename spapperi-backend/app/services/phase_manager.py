@@ -1,0 +1,345 @@
+"""
+Phase Manager: Finite State Machine for managing conversation flow.
+Handles 6 main phases with 15+ sub-phases and conditional logic.
+"""
+from typing import Dict, Any, Optional, Tuple
+from uuid import UUID
+from app.services.openai_validator import ai_validator
+from app.services.db import db
+
+
+class PhaseManager:
+    """
+    Manages conversation phase transitions and question flow.
+    """
+    
+    # Phase definitions with question templates and validation
+    PHASES = {
+        "phase_1_1": {
+            "question": "Per iniziare, potresti indicarmi cosa devi trapiantare?",
+            "expected_format": "Testo libero: nome della coltura (es: pomodori, insalata, fragole)",
+            "field": "crop_type",
+            "next_phase": "phase_1_2"
+        },
+        "phase_1_2": {
+            "question": "Perfetto. Qual è la caratteristica della radice?\n\nOpzioni:\n1. Radice Nuda\n2. Zolla Cubica\n3. Zolla Conica\n4. Zolla Piramidale",
+            "expected_format": "Scelta singola tra le 4 opzioni",
+            "field": "root_type",
+            "next_phase": "phase_1_3"
+        },
+        "phase_1_3": {
+            "question": "Ho bisogno delle dimensioni della zolla/radice (A, B, C, D). Elenca le misure per A, B, C e D in cm.",
+            "expected_format": "4 valori numerici per A, B, C, D in centimetri",
+            "field": "root_dimensions",
+            "image": "/api/images/configurator/size.png",
+            "next_phase": "phase_2_1"
+        },
+        "phase_2_1": {
+            "question": "Passiamo al sesto di impianto. Si tratta di file singole o file binate?",
+            "expected_format": "Scelta: Singole o Binate",
+            "field": "row_type",
+            "next_phase": "phase_2_2"
+        },
+        "phase_2_2": {
+            "question": lambda data: (
+                "Inserisci il numero di file, l'interfila (IF) in cm e l'interpianta (IP) in cm."
+                if data.get("row_type", "").lower() in ["singole", "singolo", "single"]
+                else "Inserisci il numero di bine, l'interfila (IF) in cm, l'interpianta (IP) in cm e l'interbina (IB) in cm."
+            ),
+            "expected_format": lambda data: (
+                "3 valori: numero file, IF (cm), IP (cm)"
+                if data.get("row_type", "").lower() in ["singole", "singolo", "single"]
+                else "4 valori: numero bine, IF (cm), IP (cm), IB (cm)"
+            ),
+            "field": "layout_details",
+            "next_phase": "phase_3_1"
+        },
+        "phase_3_1": {
+            "question": "Il trapianto avverrà in campo aperto o sotto serra?",
+            "expected_format": "Campo aperto o Serra",
+            "field": "environment",
+            "next_phase": "phase_3_2"
+        },
+        "phase_3_2": {
+            "question": "Il trapianto viene effettuato su baula?",
+            "expected_format": "Sì o No. Se Sì, specificare Altezza baula (AT), Larghezza (LT), Inter baula (IT) e Spazio tra baule (ST) in cm.",
+            "field": "is_raised_bed",
+            "next_phase": "phase_3_3"
+        },
+        "phase_3_3": {
+            "question": "Il trapianto viene effettuato sopra pacciamatura?",
+            "expected_format": "Sì o No. Se Sì, specificare Larghezza telo (LP) in cm.",
+            "field": "is_mulch",
+            "next_phase": "phase_3_4"
+        },
+        "phase_3_4": {
+            "question": "Invece qual è la tipologia del terreno?\n\nOpzioni:\n1. Argilloso / Tenace\n2. Sabbioso / Leggero",
+            "expected_format": "Scelta tra Argilloso o Sabbioso",
+            "field": "soil_type",
+            "next_phase": "phase_4_1"
+        },
+        "phase_4_1": {
+            "question": "Dammi qualche info sul trattore. Qual è la misura interna delle ruote in cm?",
+            "expected_format": "Valore numerico in centimetri",
+            "field": "wheel_distance",
+            "next_phase": "phase_4_2"
+        },
+        "phase_4_2": {
+            "question": "Quanti cavalli (HP) ha il trattore?",
+            "expected_format": "Valore numerico (HP)",
+            "field": "tractor_hp",
+            "next_phase": "phase_5_1"
+        },
+        "phase_5_1": {
+            "question": "Seleziona gli accessori primari di telaio necessari (puoi sceglierne più di uno o nessuno):\n\n- Spandiconcime\n- Innaffiamento localizzato\n- Innaffiamento in continuo\n- Stendi Manicrietta\n- Ripiani Porta Alveoli\n- Ripiani supplementari",
+            "expected_format": "Lista di accessori scelti (anche vuota)",
+            "field": "accessories_primary",
+            "next_phase": "phase_5_2"
+        },
+        "phase_5_2": {
+            "question": "Seleziona gli accessori secondari di telaio:\n\n- Separatore di zolle\n- Tracciatori fila manuali\n- Tracciatori fila idraulici",
+            "expected_format": "Lista di accessori scelti (anche vuota)",
+            "field": "accessories_secondary",
+            "next_phase": "phase_5_3"
+        },
+        "phase_5_3": {
+            "question": "Infine, seleziona gli accessori di elemento:\n\n- Microgranulatore\n- Posa/interra ala gocciolante\n- Coltello appisolo\n- Rullo in gomma",
+            "expected_format": "Lista di accessori scelti (anche vuota)",
+            "field": "accessories_element",
+            "next_phase": "phase_6_1"
+        },
+        "phase_6_1": {
+            "question": "Hai delle note o richieste particolari da aggiungere?",
+            "expected_format": "Testo libero (o 'No' se non ci sono note)",
+            "field": "user_notes",
+            "next_phase": "phase_6_2"
+        },
+        "phase_6_2": {
+            "question": "Sulla base di questi dati, sei interessato a ricevere informazioni commerciali o un preventivo?",
+            "expected_format": "Sì o No",
+            "field": "is_interested",
+            "next_phase": "phase_6_3"
+        },
+        "phase_6_3": {
+            "question": "Perfetto. Lasciami la tua Partita IVA e la tua Email per ricontattarti con il report pronto.",
+            "expected_format": "Partita IVA ed Email",
+            "field": "contact_info",
+            "next_phase": "complete"
+        }
+    }
+    
+    @classmethod
+    async def get_next_question(
+        cls,
+        conversation_id: UUID,
+        current_phase: str
+    ) -> Tuple[str, Optional[str]]:
+        """
+        Get the next question to ask based on current phase.
+        
+        Returns:
+            (question_text, image_url)
+        """
+        phase_data = cls.PHASES.get(current_phase)
+        if not phase_data:
+            return ("Errore: fase non riconosciuta", None)
+        
+        # Get configuration data for conditional questions
+        config = await db.get_configuration_data(conversation_id)
+        data = config or {}
+        
+        # Generate question (might be callable for conditional logic)
+        question = phase_data["question"]
+        if callable(question):
+            question = question(data)
+        
+        # Get image URL if present
+        image_url = phase_data.get("image")
+        
+        return (question, image_url)
+    
+    @classmethod
+    async def process_user_response(
+        cls,
+        conversation_id: UUID,
+        current_phase: str,
+        user_message: str
+    ) -> Dict[str, Any]:
+        """
+        Process user response: validate, extract data, determine next phase.
+        
+        Returns:
+            {
+                "is_valid": bool,
+                "next_phase": str,
+                "extracted_data": dict,
+                "clarification_needed": str | None
+            }
+        """
+        phase_data = cls.PHASES.get(current_phase)
+        if not phase_data:
+            return {
+                "is_valid": False,
+                "next_phase": current_phase,
+                "extracted_data": {},
+                "clarification_needed": "Fase non valida"
+            }
+        
+        # Get configuration data for conditional validation
+        config = await db.get_configuration_data(conversation_id)
+        data = config or {}
+        
+        # Get expected format (might be callable)
+        expected_format = phase_data["expected_format"]
+        if callable(expected_format):
+            expected_format = expected_format(data)
+        
+        # Get question for context
+        question = phase_data["question"]
+        if callable(question):
+            question = question(data)
+        
+        # Validate with OpenAI
+        validation = await ai_validator.validate_response(
+            phase=current_phase,
+            user_message=user_message,
+            expected_format=expected_format,
+            context=question
+        )
+        
+        is_complete = validation.get("is_complete", False)
+        extracted = validation.get("extracted_data", {})
+        clarification = validation.get("clarification_needed")
+        
+        if not is_complete:
+            return {
+                "is_valid": False,
+                "next_phase": current_phase,  # Stay in same phase
+                "extracted_data": {},
+                "clarification_needed": clarification
+            }
+        
+        # Save extracted data to configuration
+        field = phase_data["field"]
+        await cls._save_field_data(conversation_id, field, extracted, data)
+        
+        # Determine next phase with conditional logic
+        next_phase = await cls._determine_next_phase(current_phase, extracted, data)
+        
+        return {
+            "is_valid": True,
+            "next_phase": next_phase,
+            "extracted_data": extracted,
+            "clarification_needed": None
+        }
+    
+    @classmethod
+    async def _save_field_data(
+        cls,
+        conversation_id: UUID,
+        field: str,
+        extracted_data: Dict[str, Any],
+        existing_data: Dict[str, Any]
+    ):
+        """Save extracted field data to configuration"""
+        save_data = {}
+        
+        # Map extracted data to database fields
+        if field == "crop_type":
+            save_data["crop_type"] = extracted_data.get("crop_type") or extracted_data.get("raw")
+        
+        elif field == "root_type":
+            save_data["root_type"] = extracted_data.get("root_type") or extracted_data.get("raw")
+        
+        elif field == "root_dimensions":
+            save_data["root_dimensions"] = {
+                "A": extracted_data.get("A"),
+                "B": extracted_data.get("B"),
+                "C": extracted_data.get("C"),
+                "D": extracted_data.get("D")
+            }
+        
+        elif field == "row_type":
+            save_data["row_type"] = extracted_data.get("row_type") or extracted_data.get("raw")
+        
+        elif field == "layout_details":
+            save_data["layout_details"] = {
+                "IF": extracted_data.get("IF"),
+                "IP": extracted_data.get("IP"),
+                "IB": extracted_data.get("IB")  # None for single rows
+            }
+        
+        elif field == "environment":
+            save_data["environment"] = extracted_data.get("environment") or extracted_data.get("raw")
+        
+        elif field == "is_raised_bed":
+            is_raised = extracted_data.get("is_raised_bed", False)
+            save_data["is_raised_bed"] = is_raised
+            if is_raised:
+                save_data["raised_bed_details"] = {
+                    "AT": extracted_data.get("AT"),
+                    "LT": extracted_data.get("LT"),
+                    "IT": extracted_data.get("IT"),
+                    "ST": extracted_data.get("ST")
+                }
+        
+        elif field == "is_mulch":
+            is_mulch = extracted_data.get("is_mulch", False)
+            save_data["is_mulch"] = is_mulch
+            if is_mulch:
+                save_data["mulch_details"] = {
+                    "LP": extracted_data.get("LP")
+                }
+        
+        elif field == "soil_type":
+            save_data["soil_type"] = extracted_data.get("soil_type") or extracted_data.get("raw")
+        
+        elif field == "wheel_distance":
+            save_data["wheel_distance_internal"] = extracted_data.get("wheel_distance") or extracted_data.get("raw")
+        
+        elif field == "tractor_hp":
+            save_data["tractor_hp"] = extracted_data.get("tractor_hp") or extracted_data.get("raw")
+        
+        elif field == "accessories_primary":
+            save_data["accessories_primary"] = extracted_data.get("accessories", [])
+        
+        elif field == "accessories_secondary":
+            save_data["accessories_secondary"] = extracted_data.get("accessories", [])
+        
+        elif field == "accessories_element":
+            save_data["accessories_element"] = extracted_data.get("accessories", [])
+        
+        elif field == "user_notes":
+            save_data["user_notes"] = extracted_data.get("notes") or extracted_data.get("raw")
+        
+        elif field == "is_interested":
+            save_data["is_interested"] = extracted_data.get("is_interested", False)
+        
+        elif field == "contact_info":
+            save_data["contact_email"] = extracted_data.get("email")
+            save_data["vat_number"] = extracted_data.get("vat_number")
+        
+        await db.save_configuration_data(conversation_id, save_data)
+    
+    @classmethod
+    async def _determine_next_phase(
+        cls,
+        current_phase: str,
+        extracted_data: Dict[str, Any],
+        configuration_data: Dict[str, Any]
+    ) -> str:
+        """Determine next phase with conditional logic"""
+        
+        # Special case: Skip phase 6.3 if user is not interested
+        if current_phase == "phase_6_2":
+            is_interested = extracted_data.get("is_interested", False)
+            if not is_interested:
+                return "complete"  # Skip contact info collection
+        
+        # Default: use next_phase from phase definition
+        phase_data = cls.PHASES.get(current_phase, {})
+        return phase_data.get("next_phase", "complete")
+
+
+# Global instance
+phase_manager = PhaseManager

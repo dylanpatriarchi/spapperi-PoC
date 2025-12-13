@@ -4,12 +4,13 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Robot, CheckCircle, PaperPlaneRight, ArrowLeft, XCircle } from "@phosphor-icons/react";
 import Link from 'next/link';
+import Image from 'next/image';
 import Navbar from "@/components/Navbar";
 
 export default function ConfiguratorPage() {
     const [hasConsented, setHasConsented] = useState(false);
     const [chatStarted, setChatStarted] = useState(false);
-    const [messages, setMessages] = useState<Array<{ role: string, text: string }>>([]);
+    const [messages, setMessages] = useState<Array<{ role: string, text: string, image_url?: string }>>([]);
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [conversationId, setConversationId] = useState<string | null>(null);
@@ -51,7 +52,7 @@ export default function ConfiguratorPage() {
             if (!res.ok) throw new Error("API Error");
             const data = await res.json();
 
-            setMessages([{ role: 'ai', text: data.response }]);
+            setMessages([{ role: 'ai', text: data.response, image_url: data.image_url }]);
 
             if (data.conversation_id && data.conversation_id !== conversationId) {
                 setConversationId(data.conversation_id);
@@ -92,7 +93,7 @@ export default function ConfiguratorPage() {
             if (!res.ok) throw new Error("API Error");
 
             const data = await res.json();
-            setMessages(prev => [...prev, { role: 'ai', text: data.response }]);
+            setMessages(prev => [...prev, { role: 'ai', text: data.response, image_url: data.image_url }]);
 
             // Persist new ID if generated
             if (data.conversation_id && data.conversation_id !== conversationId) {
@@ -234,6 +235,18 @@ export default function ConfiguratorPage() {
                                         }`}
                                     >
                                         {msg.text}
+                                        {msg.image_url && (
+                                            <div className="mt-4 rounded-lg overflow-hidden border border-gray-200">
+                                                <Image
+                                                    src={msg.image_url}
+                                                    alt="Riferimento configurazione"
+                                                    width={400}
+                                                    height={300}
+                                                    className="w-full h-auto"
+                                                    unoptimized
+                                                />
+                                            </div>
+                                        )}
                                     </div>
                                 </motion.div>
                             ))}

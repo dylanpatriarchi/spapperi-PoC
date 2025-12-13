@@ -13,9 +13,23 @@ CREATE TABLE IF NOT EXISTS conversations (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES users(id), -- Optional for anonymous chat initially
     checkpoints JSONB, -- LangGraph Checkpoint Blob
+    current_phase TEXT DEFAULT 'phase_1_1', -- Current conversation phase (FSM state)
+    status TEXT DEFAULT 'active', -- active | completed | abandoned
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Messages table for complete conversation history
+CREATE TABLE IF NOT EXISTS messages (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    conversation_id UUID REFERENCES conversations(id) ON DELETE CASCADE,
+    role TEXT NOT NULL, -- 'user' | 'assistant' | 'system'
+    content TEXT NOT NULL,
+    image_url TEXT, -- Optional: URL immagine allegata (es: size.png)
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_messages_conversation ON messages(conversation_id, created_at);
 
 -- Collected Configurations (Structured Data)
 CREATE TABLE IF NOT EXISTS configurations (
