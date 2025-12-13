@@ -199,12 +199,28 @@ class PhaseManager:
         if callable(question):
             question = question(data)
         
-        # Validate with OpenAI
+        # Get conversation history for this phase (for context-aware validation)
+        all_messages = await db.get_conversation_messages(conversation_id)
+        
+        # Find when current phase started and get messages since then
+        phase_messages = []
+        phase_started = False
+        for msg in all_messages:
+            # Detect phase start (assistant asks the question for this phase)
+            if msg['role'] == 'assistant' and not phase_started:
+                # Check if this message contains the current phase question
+                if question[:50] in msg['content']:  # Match first 50 chars
+                    phase_started = True
+            elif phase_started:
+                phase_messages.append(msg)
+        
+        # Validate with OpenAI, including conversation history
         validation = await ai_validator.validate_response(
             phase=current_phase,
             user_message=user_message,
             expected_format=expected_format,
-            context=question
+            context=question,
+            conversation_history=phase_messages
         )
         
         is_complete = validation.get("is_complete", False)

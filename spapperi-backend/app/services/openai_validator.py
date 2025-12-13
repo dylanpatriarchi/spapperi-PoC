@@ -27,7 +27,8 @@ class OpenAIValidator:
         phase: str,
         user_message: str,
         expected_format: str,
-        context: str = ""
+        context: str = "",
+        conversation_history: list = None
     ) -> Dict[str, Any]:
         """
         Validate if user response is complete and extract data.
@@ -37,6 +38,7 @@ class OpenAIValidator:
             user_message: User's input message
             expected_format: Description of expected format
             context: Additional context about the question
+            conversation_history: List of previous messages in current phase
         
         Returns:
             {
@@ -78,18 +80,27 @@ Rispondi SEMPRE in formato JSON:
 
 IMPORTANTE: Se hai QUALSIASI dubbio sulla completezza, rispondi is_complete: false."""
 
+        # Build conversation history context
+        history_context = ""
+        if conversation_history and len(conversation_history) > 0:
+            history_context = "\n**MESSAGGI PRECEDENTI DELL'UTENTE IN QUESTA FASE**:\n"
+            for i, msg in enumerate(conversation_history[-3:], 1):  # Last 3 messages
+                if msg.get('role') == 'user':
+                    history_context += f"{i}. \"{msg.get('content')}\"\n"
+            history_context += "\nIMPORTANTE: Considera TUTTE le informazioni fornite nei messaggi precedenti. Se l'utente ha già dato alcuni valori, NON chiederli di nuovo.\n"
+
         user_prompt = f"""**FASE**: {phase}
 **DOMANDA POSTA ALL'UTENTE**: 
 {context}
 
 **FORMATO RICHIESTO**: 
 {expected_format}
-
-**RISPOSTA FORNITA DALL'UTENTE**: 
+{history_context}
+**RISPOSTA CORRENTE DELL'UTENTE**: 
 "{user_message}"
 
 ANALIZZA con attenzione:
-1. La risposta contiene TUTTE le informazioni richieste?
+1. La risposta CORRENTE + i messaggi PRECEDENTI contengono TUTTE le informazioni?
 2. I valori sono plausibili e sensati?
 3. Se è una scelta multipla, corrisponde a un'opzione valida?
 
