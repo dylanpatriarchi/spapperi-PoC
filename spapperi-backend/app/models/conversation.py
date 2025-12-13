@@ -2,7 +2,7 @@
 Pydantic models for conversation data structures.
 """
 from pydantic import BaseModel, Field
-from typing import Optional, Literal
+from typing import Optional, Literal, List
 from uuid import UUID
 from datetime import datetime
 
