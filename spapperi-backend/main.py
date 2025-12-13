@@ -121,9 +121,14 @@ async def chat(request: ChatRequest):
         next_phase = result["next_phase"]
         clarification = result.get("clarification_needed")
         
+        # Log validation result for debugging
+        print(f"Validation result for phase {current_phase}: valid={is_valid}, clarification={clarification}")
+        
         if not is_valid:
             # Invalid/incomplete response - ask for clarification
             response_text = clarification or "Mi dispiace, non ho capito bene. Puoi essere più specifico?"
+            
+            print(f"Requesting clarification: {response_text}")
             
             await db.save_message(
                 conversation_id=conv_id,

@@ -46,48 +46,86 @@ class OpenAIValidator:
             }
         """
         system_prompt = """Sei un assistente esperto nella configurazione di trapiantatrici agricole.
-Il tuo compito è validare le risposte degli utenti durante un processo di configurazione guidato.
+Il tuo compito è validare RIGOROSAMENTE le risposte degli utenti durante un processo di configurazione guidato.
 
-Per ogni risposta dell'utente, devi determinare:
-1. Se la risposta è COMPLETA e VALIDA per la domanda posta
-2. Estrarre i dati dalla risposta in formato strutturato
-3. Se la risposta è incompleta/ambigua, indicare quale chiarimento serve
+REGOLE DI VALIDAZIONE:
+1. La risposta deve contenere TUTTE le informazioni richieste
+2. I valori numerici devono essere plausibili per il contesto agricolo
+3. Le scelte multiple devono corrispondere alle opzioni fornite
+4. Se manca QUALSIASI informazione, segnala "is_complete": false
 
-Rispondi SEMPRE in formato JSON con questa struttura:
+ESEMPI DI VALIDAZIONE:
+
+Domanda: "Qual è la caratteristica della radice? Opzioni: 1. Radice Nuda 2. Zolla Cubica 3. Zolla Conica 4. Zolla Piramidale"
+Risposta: "cubica" → ✅ is_complete: true, extracted_data: {"root_type": "Zolla Cubica"}
+Risposta: "non lo so" → ❌ is_complete: false, clarification_needed: "Devi scegliere tra le 4 opzioni"
+
+Domanda: "Dimensioni radice: A, B, C, D in cm"
+Risposta: "A=3, B=3, C=4, D=5" → ✅ is_complete: true
+Risposta: "A=3, B=3" → ❌ is_complete: false, clarification_needed: "Mancano i valori C e D"
+Risposta: "circa 3 cm" → ❌ is_complete: false, clarification_needed: "Servono 4 valori distinti: A, B, C, D"
+
+Domanda: "Numero bine, IF (cm), IP (cm), IB (cm)"
+Risposta: "4 bine, IF 120, IP 30, IB 25" → ✅ is_complete: true
+Risposta: "120 cm" → ❌ is_complete: false, clarification_needed: "Servono anche numero bine, IP e IB"
+
+Rispondi SEMPRE in formato JSON:
 {
     "is_complete": true/false,
     "extracted_data": {...} o null,
     "clarification_needed": "..." o null
-}"""
+}
+
+IMPORTANTE: Se hai QUALSIASI dubbio sulla completezza, rispondi is_complete: false."""
 
         user_prompt = f"""**FASE**: {phase}
-**DOMANDA**: {context}
-**FORMATO ATTESO**: {expected_format}
-**RISPOSTA UTENTE**: "{user_message}"
+**DOMANDA POSTA ALL'UTENTE**: 
+{context}
 
-Valida se la risposta è completa ed estrai i dati."""
+**FORMATO RICHIESTO**: 
+{expected_format}
+
+**RISPOSTA FORNITA DALL'UTENTE**: 
+"{user_message}"
+
+ANALIZZA con attenzione:
+1. La risposta contiene TUTTE le informazioni richieste?
+2. I valori sono plausibili e sensati?
+3. Se è una scelta multipla, corrisponde a un'opzione valida?
+
+Valida RIGOROSAMENTE e restituisci JSON."""
 
         try:
             response = await cls.client.chat.completions.create(
-                model="gpt-4",
+                model="gpt-4o",  # Use gpt-4o which supports JSON mode
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
                 ],
                 response_format={"type": "json_object"},
-                temperature=0.1
+                temperature=0.0  # Zero temperature for consistent validation
             )
             
             result = json.loads(response.choices[0].message.content)
+            
+            # Additional validation: check if result has required fields
+            if "is_complete" not in result:
+                print(f"Warning: OpenAI response missing is_complete field: {result}")
+                return {
+                    "is_complete": False,
+                    "extracted_data": None,
+                    "clarification_needed": "Risposta non chiara. Puoi riformulare?"
+                }
+            
             return result
             
         except Exception as e:
             print(f"OpenAI validation error: {e}")
-            # Fallback: accept response as-is
+            # Fallback: reject response to be safe
             return {
-                "is_complete": True,
-                "extracted_data": {"raw": user_message},
-                "clarification_needed": None
+                "is_complete": False,
+                "extracted_data": None,
+                "clarification_needed": "C'è stato un problema tecnico. Puoi ripetere la tua risposta?"
             }
 
 
