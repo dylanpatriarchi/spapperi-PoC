@@ -92,21 +92,43 @@ class PhaseManager:
             "next_phase": "phase_5_1"
         },
         "phase_5_1": {
-            "question": "Seleziona gli accessori primari di telaio necessari (puoi sceglierne più di uno o nessuno):\n\n- Spandiconcime\n- Innaffiamento localizzato\n- Innaffiamento in continuo\n- Stendi Manicrietta\n- Ripiani Porta Alveoli\n- Ripiani supplementari",
+            "question": "Seleziona gli accessori primari di telaio necessari:",
             "expected_format": "Lista di accessori scelti (anche vuota)",
             "field": "accessories_primary",
+            "ui_type": "checkbox",
+            "options": [
+                "Spandiconcime",
+                "Innaffiamento localizzato",
+                "Innaffiamento in continuo",
+                "Stendi Manicrietta",
+                "Ripiani Porta Alveoli",
+                "Ripiani supplementari"
+            ],
             "next_phase": "phase_5_2"
         },
         "phase_5_2": {
-            "question": "Seleziona gli accessori secondari di telaio:\n\n- Separatore di zolle\n- Tracciatori fila manuali\n- Tracciatori fila idraulici",
+            "question": "Seleziona gli accessori secondari di telaio:",
             "expected_format": "Lista di accessori scelti (anche vuota)",
             "field": "accessories_secondary",
+            "ui_type": "checkbox",
+            "options": [
+                "Separatore di zolle",
+                "Tracciatori fila manuali",
+                "Tracciatori fila idraulici"
+            ],
             "next_phase": "phase_5_3"
         },
         "phase_5_3": {
-            "question": "Infine, seleziona gli accessori di elemento:\n\n- Microgranulatore\n- Posa/interra ala gocciolante\n- Coltello appisolo\n- Rullo in gomma",
+            "question": "Infine, seleziona gli accessori di elemento:",
             "expected_format": "Lista di accessori scelti (anche vuota)",
             "field": "accessories_element",
+            "ui_type": "checkbox",
+            "options": [
+                "Microgranulatore",
+                "Posa/interra ala gocciolante",
+                "Coltello appisolo",
+                "Rullo in gomma"
+            ],
             "next_phase": "phase_6_1"
         },
         "phase_6_1": {
@@ -134,16 +156,16 @@ class PhaseManager:
         cls,
         conversation_id: UUID,
         current_phase: str
-    ) -> Tuple[str, Optional[str]]:
+    ) -> Tuple[str, Optional[str], Optional[str], Optional[list]]:
         """
         Get the next question to ask based on current phase.
         
         Returns:
-            (question_text, image_url)
+            (question_text, image_url, ui_type, options)
         """
         phase_data = cls.PHASES.get(current_phase)
         if not phase_data:
-            return ("Errore: fase non riconosciuta", None)
+            return ("Errore: fase non riconosciuta", None, None, None)
         
         # Get configuration data for conditional questions
         config = await db.get_configuration_data(conversation_id)
@@ -159,7 +181,11 @@ class PhaseManager:
         # Get image URL if present
         image_url = phase_data.get("image")
         
-        return (question, image_url)
+        # Get UI metadata (for checkbox rendering)
+        ui_type = phase_data.get("ui_type")
+        options = phase_data.get("options")
+        
+        return (question, image_url, ui_type, options)
     
     @classmethod
     async def process_user_response(

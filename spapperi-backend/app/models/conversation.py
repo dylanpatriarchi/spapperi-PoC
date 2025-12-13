@@ -21,6 +21,8 @@ class ChatResponse(BaseModel):
     image_url: Optional[str] = None
     is_complete: bool = False
     export_file: Optional[str] = None
+    ui_type: Optional[str] = None  # "text" or "checkbox"
+    options: Optional[List[str]] = None  # Available options for checkbox
 
 
 class Message(BaseModel):

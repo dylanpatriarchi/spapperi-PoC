@@ -9,10 +9,17 @@ import Navbar from "@/components/Navbar";
 export default function ConfiguratorPage() {
     const [hasConsented, setHasConsented] = useState(false);
     const [chatStarted, setChatStarted] = useState(false);
-    const [messages, setMessages] = useState<Array<{ role: string, text: string, image_url?: string }>>([]);
+    const [messages, setMessages] = useState<Array<{
+        role: string;
+        text: string;
+        image_url?: string;
+        ui_type?: string;
+        options?: string[];
+    }>>([]);
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [conversationId, setConversationId] = useState<string | null>(null);
+    const [selectedCheckboxes, setSelectedCheckboxes] = useState<string[]>([]);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     // Load conversation ID from local storage on mount
@@ -99,7 +106,13 @@ export default function ConfiguratorPage() {
             if (!res.ok) throw new Error("API Error");
             const data = await res.json();
 
-            setMessages([{ role: 'ai', text: data.response, image_url: data.image_url }]);
+            setMessages([{
+                role: 'ai',
+                text: data.response,
+                image_url: data.image_url,
+                ui_type: data.ui_type,
+                options: data.options
+            }]);
 
             if (data.conversation_id && data.conversation_id !== conversationId) {
                 setConversationId(data.conversation_id);
@@ -140,9 +153,62 @@ export default function ConfiguratorPage() {
             if (!res.ok) throw new Error("API Error");
 
             const data = await res.json();
-            setMessages(prev => [...prev, { role: 'ai', text: data.response, image_url: data.image_url }]);
+            setMessages(prev => [...prev, {
+                role: 'ai',
+                text: data.response,
+                image_url: data.image_url,
+                ui_type: data.ui_type,
+                options: data.options
+            }]);
 
             // Persist new ID if generated
+            if (data.conversation_id && data.conversation_id !== conversationId) {
+                setConversationId(data.conversation_id);
+                localStorage.setItem('spapperi_conversation_id', data.conversation_id);
+            }
+
+        } catch (error) {
+            console.error(error);
+            setMessages(prev => [...prev, { role: 'ai', text: "Mi dispiace, c'è stato un problema di comunicazione con il server." }]);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const sendCheckboxSelection = async () => {
+        // Send selected checkboxes as JSON array
+        const selectionJSON = JSON.stringify(selectedCheckboxes);
+
+        setMessages(prev => [...prev, {
+            role: 'user',
+            text: selectedCheckboxes.length > 0
+                ? selectedCheckboxes.join(', ')
+                : 'Nessuna selezione'
+        }]);
+        setSelectedCheckboxes([]);
+        setIsLoading(true);
+
+        try {
+            const res = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: selectionJSON,
+                    conversation_id: conversationId
+                })
+            });
+
+            if (!res.ok) throw new Error("API Error");
+
+            const data = await res.json();
+            setMessages(prev => [...prev, {
+                role: 'ai',
+                text: data.response,
+                image_url: data.image_url,
+                ui_type: data.ui_type,
+                options: data.options
+            }]);
+
             if (data.conversation_id && data.conversation_id !== conversationId) {
                 setConversationId(data.conversation_id);
                 localStorage.setItem('spapperi_conversation_id', data.conversation_id);
@@ -289,6 +355,40 @@ export default function ConfiguratorPage() {
                                                     alt="Riferimento configurazione"
                                                     className="w-full h-auto"
                                                 />
+                                            </div>
+                                        )}
+
+                                        {/* Checkbox UI for accessory selection */}
+                                        {msg.ui_type === 'checkbox' && msg.options && i === messages.length - 1 && (
+                                            <div className="mt-4 space-y-3">
+                                                {msg.options.map((option, idx) => (
+                                                    <label
+                                                        key={idx}
+                                                        className="flex items-center gap-3 p-3 rounded-lg bg-white hover:bg-gray-50 cursor-pointer transition-colors border border-gray-200"
+                                                    >
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={selectedCheckboxes.includes(option)}
+                                                            onChange={(e) => {
+                                                                if (e.target.checked) {
+                                                                    setSelectedCheckboxes(prev => [...prev, option]);
+                                                                } else {
+                                                                    setSelectedCheckboxes(prev => prev.filter(item => item !== option));
+                                                                }
+                                                            }}
+                                                            className="w-5 h-5 text-spapperi-red rounded focus:ring-2 focus:ring-spapperi-red"
+                                                        />
+                                                        <span className="text-gray-700 font-medium">{option}</span>
+                                                    </label>
+                                                ))}
+
+                                                <button
+                                                    onClick={sendCheckboxSelection}
+                                                    disabled={isLoading}
+                                                    className="mt-4 w-full bg-spapperi-red text-white px-6 py-3 rounded-xl font-semibold hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                                >
+                                                    {isLoading ? 'Invio...' : 'Conferma Selezione'}
+                                                </button>
                                             </div>
                                         )}
                                     </div>

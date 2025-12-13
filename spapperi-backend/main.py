@@ -91,7 +91,7 @@ async def chat(request: ChatRequest):
         # Special case: Initial greeting
         if current_phase == "phase_1_1" and len(await db.get_conversation_messages(conv_id)) == 1:
             # First message ever - send welcome + first question
-            question, image_url = await phase_manager.get_next_question(conv_id, current_phase)
+            question, image_url, ui_type, options = await phase_manager.get_next_question(conv_id, current_phase)
             welcome = f"Ciao! Sono l'assistente Spapperi per configurare la tua trapiantatrice.\n\n{question}"
             
             await db.save_message(
@@ -107,7 +107,9 @@ async def chat(request: ChatRequest):
                 current_phase=current_phase,
                 image_url=image_url,
                 is_complete=False,
-                export_file=None
+                export_file=None,
+                ui_type=ui_type,
+                options=options
             )
         
         # Process user response with AI validation
@@ -173,7 +175,7 @@ async def chat(request: ChatRequest):
         await asyncio.sleep(0.1)
         
         # Get next question (will fetch fresh data from DB for conditional logic)
-        next_question, image_url = await phase_manager.get_next_question(conv_id, next_phase)
+        next_question, image_url, ui_type, options = await phase_manager.get_next_question(conv_id, next_phase)
         
         await db.save_message(
             conversation_id=conv_id,
@@ -187,7 +189,9 @@ async def chat(request: ChatRequest):
             conversation_id=str(conv_id),
             current_phase=next_phase,
             image_url=image_url,
-            is_complete=False
+            is_complete=False,
+            ui_type=ui_type,
+            options=options
         )
     
     except Exception as e:
