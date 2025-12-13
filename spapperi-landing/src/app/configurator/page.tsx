@@ -1,10 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Robot, CheckCircle, PaperPlaneRight, ArrowLeft, XCircle } from "@phosphor-icons/react";
 import Link from 'next/link';
-import Image from 'next/image';
 import Navbar from "@/components/Navbar";
 
 export default function ConfiguratorPage() {
@@ -14,12 +13,18 @@ export default function ConfiguratorPage() {
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [conversationId, setConversationId] = useState<string | null>(null);
+    const messagesEndRef = useRef<HTMLDivElement>(null);
 
     // Load conversation ID from local storage on mount
     useEffect(() => {
         const storedId = localStorage.getItem('spapperi_conversation_id');
         if (storedId) setConversationId(storedId);
     }, []);
+
+    // Auto-scroll to latest message
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messages, isLoading]);
 
     const startChat = () => {
         if (hasConsented) {
@@ -237,19 +242,49 @@ export default function ConfiguratorPage() {
                                         {msg.text}
                                         {msg.image_url && (
                                             <div className="mt-4 rounded-lg overflow-hidden border border-gray-200">
-                                                <Image
-                                                    src={msg.image_url}
+                                                <img
+                                                    src={`http://localhost:8000${msg.image_url}`}
                                                     alt="Riferimento configurazione"
-                                                    width={400}
-                                                    height={300}
                                                     className="w-full h-auto"
-                                                    unoptimized
                                                 />
                                             </div>
                                         )}
                                     </div>
                                 </motion.div>
                             ))}
+
+                            {/* Typing Indicator */}
+                            {isLoading && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0 }}
+                                    className="flex justify-start"
+                                >
+                                    <div className="bg-gray-100 p-6 rounded-3xl rounded-bl-none">
+                                        <div className="flex gap-1.5">
+                                            <motion.div
+                                                animate={{ y: [0, -8, 0] }}
+                                                transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
+                                                className="w-2.5 h-2.5 bg-gray-400 rounded-full"
+                                            />
+                                            <motion.div
+                                                animate={{ y: [0, -8, 0] }}
+                                                transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
+                                                className="w-2.5 h-2.5 bg-gray-400 rounded-full"
+                                            />
+                                            <motion.div
+                                                animate={{ y: [0, -8, 0] }}
+                                                transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
+                                                className="w-2.5 h-2.5 bg-gray-400 rounded-full"
+                                            />
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            {/* Scroll anchor */}
+                            <div ref={messagesEndRef} />
                         </div>
 
                         <div className="relative">
