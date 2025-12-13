@@ -18,13 +18,46 @@ export default function ConfiguratorPage() {
     // Load conversation ID from local storage on mount
     useEffect(() => {
         const storedId = localStorage.getItem('spapperi_conversation_id');
-        if (storedId) setConversationId(storedId);
+        if (storedId) {
+            setConversationId(storedId);
+            // Auto-restore chat if conversation exists
+            loadExistingConversation(storedId);
+        }
     }, []);
 
     // Auto-scroll to latest message
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages, isLoading]);
+
+    const loadExistingConversation = async (convId: string) => {
+        // Auto-consent and start chat if conversation exists
+        setHasConsented(true);
+        setChatStarted(true);
+
+        // Try to load conversation history
+        try {
+            const res = await fetch(`/api/conversation/${convId}/history`);
+            if (res.ok) {
+                const data = await res.json();
+                if (data.messages && data.messages.length > 0) {
+                    // Convert backend messages format to frontend
+                    const formattedMessages = data.messages.map((msg: any) => ({
+                        role: msg.role === 'assistant' ? 'ai' : msg.role,
+                        text: msg.content,
+                        image_url: msg.image_url
+                    }));
+                    setMessages(formattedMessages);
+                    return; // Messages loaded successfully
+                }
+            }
+        } catch (e) {
+            console.error('Failed to load conversation history:', e);
+        }
+
+        // If loading fails or no messages, start fresh greeting
+        fetchGreeting();
+    };
 
     const startChat = () => {
         if (hasConsented) {
@@ -34,6 +67,15 @@ export default function ConfiguratorPage() {
                 fetchGreeting();
             }
         }
+    };
+
+    const resetChat = () => {
+        // Clear localStorage and reset state
+        localStorage.removeItem('spapperi_conversation_id');
+        setConversationId(null);
+        setMessages([]);
+        setChatStarted(false);
+        setHasConsented(false);
     };
 
     const fetchGreeting = async () => {

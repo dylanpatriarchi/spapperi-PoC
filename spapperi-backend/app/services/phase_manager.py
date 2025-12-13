@@ -42,13 +42,14 @@ class PhaseManager:
         },
         "phase_2_2": {
             "question": lambda data: (
+                print(f"DEBUG phase_2_2: row_type = {data.get('row_type')}") or
                 "Inserisci il numero di file, l'interfila (IF) in cm e l'interpianta (IP) in cm."
-                if data.get("row_type", "").lower() in ["singole", "singolo", "single"]
+                if (data.get("row_type") or "").lower() in ["singole", "singolo", "single"]
                 else "Inserisci il numero di bine, l'interfila (IF) in cm, l'interpianta (IP) in cm e l'interbina (IB) in cm."
             ),
             "expected_format": lambda data: (
                 "3 valori: numero file, IF (cm), IP (cm)"
-                if data.get("row_type", "").lower() in ["singole", "singolo", "single"]
+                if (data.get("row_type") or "").lower() in ["singole", "singolo", "single"]
                 else "4 valori: numero bine, IF (cm), IP (cm), IB (cm)"
             ),
             "field": "layout_details",
@@ -147,6 +148,8 @@ class PhaseManager:
         # Get configuration data for conditional questions
         config = await db.get_configuration_data(conversation_id)
         data = config or {}
+        
+        print(f"DEBUG get_next_question: phase={current_phase}, config data={data}")
         
         # Generate question (might be callable for conditional logic)
         question = phase_data["question"]
@@ -276,7 +279,16 @@ class PhaseManager:
             }
         
         elif field == "row_type":
-            save_data["row_type"] = extracted_data.get("row_type") or extracted_data.get("raw")
+            print(f"DEBUG save row_type: extracted_data = {extracted_data}")
+            # Try multiple keys as GPT-4o might use different names
+            save_data["row_type"] = (
+                extracted_data.get("row_type") or 
+                extracted_data.get("sesto_impianto") or
+                extracted_data.get("type") or
+                extracted_data.get("raw")
+            )
+            print(f"DEBUG save row_type: saving value = {save_data['row_type']}")
+        
         
         elif field == "layout_details":
             save_data["layout_details"] = {

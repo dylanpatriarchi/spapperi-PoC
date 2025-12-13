@@ -168,7 +168,11 @@ async def chat(request: ChatRequest):
                 export_file=f"/api/export/{conv_id}"
             )
         
-        # Get next question
+        # Small delay to ensure DB writes complete before fetching for conditional logic
+        import asyncio
+        await asyncio.sleep(0.1)
+        
+        # Get next question (will fetch fresh data from DB for conditional logic)
         next_question, image_url = await phase_manager.get_next_question(conv_id, next_phase)
         
         await db.save_message(
