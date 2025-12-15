@@ -410,7 +410,10 @@ class PhaseManager:
         
         # Special case: Skip phase 6.3 if user is not interested
         if current_phase == "phase_6_2":
-            is_interested = extracted_data.get("is_interested", False)
+            # OpenAI extracts as 'interested_in_commercial_info_or_quote'
+            value = extracted_data.get("interested_in_commercial_info_or_quote", "")
+            is_interested = "sì" in str(value).lower() or "si" in str(value).lower() or "yes" in str(value).lower()
+            print(f"DEBUG next_phase: value='{value}', is_interested={is_interested}")
             if not is_interested:
                 return "complete"  # Skip contact info collection
         
