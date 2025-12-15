@@ -1,0 +1,157 @@
+================================================================================
+REPORT CONFIGURAZIONE TRAPIANTATRICE SPAPPERI
+================================================================================
+
+Data generazione: 15/12/2025 11:51
+Conversation ID: ee152545-09d1-490b-b03e-18c05c3db73d
+Status: completed
+
+================================================================================
+
+STORICO CONVERSAZIONE
+--------------------------------------------------------------------------------
+
+[11:48:53] UTENTE:
+  Ciao
+
+[11:48:53] ASSISTENTE:
+  Ciao! Sono l'assistente Spapperi per configurare la tua trapiantatrice.
+
+Per iniziare, potresti indicarmi cosa devi trapiantare?
+
+[11:48:57] UTENTE:
+  pomodori
+
+[11:48:59] ASSISTENTE:
+  Perfetto. Qual è la caratteristica della radice?
+
+[11:49:10] UTENTE:
+  ["Zolla Cubica"]
+
+[11:49:11] ASSISTENTE:
+  Ho bisogno delle dimensioni della zolla/radice (A, B, C, D). Elenca le misure per A, B, C e D in cm.
+  [Immagine allegata: /api/images/configurator/size.png]
+
+[11:49:22] UTENTE:
+  A = 3.5 cm, B = 3.5 cm, C = 4 cm, D = 5 cm
+
+[11:49:24] ASSISTENTE:
+  Passiamo al sesto di impianto. Si tratta di file singole o file binate?
+
+[11:49:27] UTENTE:
+  binate
+
+[11:49:29] ASSISTENTE:
+  Inserisci il numero di bine, l'interfila (IF) in cm, l'interpianta (IP) in cm e l'interbina (IB) in cm.
+
+[11:49:34] UTENTE:
+  4 bine, IF = 120 cm, IP = 30 cm, IB = 25 cm
+
+[11:49:36] ASSISTENTE:
+  Il trapianto avverrà in campo aperto o sotto serra?
+
+[11:49:42] UTENTE:
+  Campo aperto
+
+[11:49:44] ASSISTENTE:
+  Il trapianto viene effettuato su baula?
+
+[11:49:50] UTENTE:
+  Sì, altezza 15 cm, larghezza 80 cm, inter baula 30 cm, spazio tra baule 140 cm
+
+[11:49:52] ASSISTENTE:
+  Il trapianto viene effettuato sopra pacciamatura?
+
+[11:49:56] UTENTE:
+  Sì, larghezza telo 120 cm
+
+[11:49:57] ASSISTENTE:
+  Invece qual è la tipologia del terreno?
+
+[11:50:03] UTENTE:
+  ["Argilloso / Tenace"]
+
+[11:50:04] ASSISTENTE:
+  Dammi qualche info sul trattore. Qual è la misura interna delle ruote in cm?
+
+[11:50:09] UTENTE:
+  150
+
+[11:50:11] ASSISTENTE:
+  Quanti cavalli (HP) ha il trattore?
+
+[11:50:12] UTENTE:
+  75
+
+[11:50:12] ASSISTENTE:
+  Seleziona gli accessori primari di telaio necessari:
+
+[11:50:38] UTENTE:
+  ["Ripiani Porta Alveoli","Innaffiamento localizzato"]
+
+[11:50:40] ASSISTENTE:
+  Seleziona gli accessori secondari di telaio:
+
+[11:50:45] UTENTE:
+  ["Tracciatori fila manuali"]
+
+[11:50:47] ASSISTENTE:
+  Infine, seleziona gli accessori di elemento:
+
+[11:50:55] UTENTE:
+  ["Microgranulatore"]
+
+[11:50:56] ASSISTENTE:
+  Hai delle note o richieste particolari da aggiungere?
+
+[11:50:59] UTENTE:
+  no
+
+[11:50:59] ASSISTENTE:
+  Sulla base di questi dati, sei interessato a ricevere informazioni commerciali o un preventivo?
+
+[11:51:02] UTENTE:
+  ["Sì"]
+
+
+================================================================================
+
+DATI CONFIGURAZIONE RACCOLTI
+--------------------------------------------------------------------------------
+
+FASE 1: Caratteristiche della Pianta
+
+  Coltura: None
+  Tipo radice: Zolla Cubica
+
+FASE 2: Sesto di Impianto
+
+  Tipologia: Binate
+
+FASE 3: Trapianto e Terreno
+
+  Ambiente: None
+  Su baula: No
+  Con pacciamatura: No
+  Tipo terreno: Argilloso
+
+FASE 4: Macchinario (Trattore)
+
+  Ruote interne: None cm
+  Potenza: 75 HP
+
+FASE 5: Accessori
+
+  Accessori primari telaio: Nessuno
+  Accessori secondari:       Nessuno
+  Accessori di elemento:     Nessuno
+
+FASE 6: Note Aggiuntive
+
+  No
+
+
+================================================================================
+
+Grazie per aver utilizzato il configuratore Spapperi.
+Sarai ricontattato al più presto dal nostro team commerciale.

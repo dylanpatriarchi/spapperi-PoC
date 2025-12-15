@@ -68,6 +68,7 @@ CREATE TABLE IF NOT EXISTS configurations (
     
     -- PHASE 6: Closing
     user_notes TEXT,
+    is_interested BOOLEAN,
     contact_email TEXT,
     vat_number TEXT,
     

@@ -22,9 +22,16 @@ class PhaseManager:
             "next_phase": "phase_1_2"
         },
         "phase_1_2": {
-            "question": "Perfetto. Qual è la caratteristica della radice?\n\nOpzioni:\n1. Radice Nuda\n2. Zolla Cubica\n3. Zolla Conica\n4. Zolla Piramidale",
-            "expected_format": "Scelta singola tra le 4 opzioni",
+            "question": "Perfetto. Qual è la caratteristica della radice?",
+            "expected_format": "Tipo di radice (es: Radice Nuda, Zolla Cubica, Zolla Conica, Zolla Piramidale)",
             "field": "root_type",
+            "ui_type": "radio",
+            "options": [
+                "Radice Nuda",
+                "Zolla Cubica",
+                "Zolla Conica",
+                "Zolla Piramidale"
+            ],
             "next_phase": "phase_1_3"
         },
         "phase_1_3": {
@@ -74,9 +81,14 @@ class PhaseManager:
             "next_phase": "phase_3_4"
         },
         "phase_3_4": {
-            "question": "Invece qual è la tipologia del terreno?\n\nOpzioni:\n1. Argilloso / Tenace\n2. Sabbioso / Leggero",
+            "question": "Invece qual è la tipologia del terreno?",
             "expected_format": "Scelta tra Argilloso o Sabbioso",
             "field": "soil_type",
+            "ui_type": "radio",
+            "options": [
+                "Argilloso / Tenace",
+                "Sabbioso / Leggero"
+            ],
             "next_phase": "phase_4_1"
         },
         "phase_4_1": {
@@ -97,6 +109,7 @@ class PhaseManager:
             "field": "accessories_primary",
             "ui_type": "checkbox",
             "options": [
+                "Nessuno",
                 "Spandiconcime",
                 "Innaffiamento localizzato",
                 "Innaffiamento in continuo",
@@ -112,6 +125,7 @@ class PhaseManager:
             "field": "accessories_secondary",
             "ui_type": "checkbox",
             "options": [
+                "Nessuno",
                 "Separatore di zolle",
                 "Tracciatori fila manuali",
                 "Tracciatori fila idraulici"
@@ -124,6 +138,7 @@ class PhaseManager:
             "field": "accessories_element",
             "ui_type": "checkbox",
             "options": [
+                "Nessuno",
                 "Microgranulatore",
                 "Posa/interra ala gocciolante",
                 "Coltello appisolo",
@@ -141,6 +156,8 @@ class PhaseManager:
             "question": "Sulla base di questi dati, sei interessato a ricevere informazioni commerciali o un preventivo?",
             "expected_format": "Sì o No",
             "field": "is_interested",
+            "ui_type": "radio",
+            "options": ["Sì", "No"],
             "next_phase": "phase_6_3"
         },
         "phase_6_3": {

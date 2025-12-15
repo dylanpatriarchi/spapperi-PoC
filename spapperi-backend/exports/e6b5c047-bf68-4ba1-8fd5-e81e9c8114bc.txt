@@ -1,0 +1,162 @@
+================================================================================
+REPORT CONFIGURAZIONE TRAPIANTATRICE SPAPPERI
+================================================================================
+
+Data generazione: 14/12/2025 16:35
+Conversation ID: e6b5c047-bf68-4ba1-8fd5-e81e9c8114bc
+Status: completed
+
+================================================================================
+
+STORICO CONVERSAZIONE
+--------------------------------------------------------------------------------
+
+[16:17:12] UTENTE:
+  Ciao
+
+[16:17:12] ASSISTENTE:
+  Ciao! Sono l'assistente Spapperi per configurare la tua trapiantatrice.
+
+Per iniziare, potresti indicarmi cosa devi trapiantare?
+
+[16:29:41] UTENTE:
+  Pomodori
+
+[16:29:44] ASSISTENTE:
+  Perfetto. Qual è la caratteristica della radice?
+  [Immagine allegata: /api/images/configurator/size.png]
+
+[16:33:39] UTENTE:
+  ["Zolla Cubica"]
+
+[16:33:41] ASSISTENTE:
+  Ho bisogno delle dimensioni della zolla/radice (A, B, C, D). Elenca le misure per A, B, C e D in cm.
+  [Immagine allegata: /api/images/configurator/size.png]
+
+[16:34:10] UTENTE:
+  A = 3.5 cm, B = 3.5 cm, C = 4 cm, D = 5 cm
+
+[16:34:12] ASSISTENTE:
+  Passiamo al sesto di impianto. Si tratta di file singole o file binate?
+
+[16:34:12] UTENTE:
+  binate
+
+[16:34:14] ASSISTENTE:
+  Inserisci il numero di bine, l'interfila (IF) in cm, l'interpianta (IP) in cm e l'interbina (IB) in cm.
+
+[16:34:24] UTENTE:
+  4  bine, IF = 120 cm, IP = 30 cm, IB = 25 cm
+
+[16:34:26] ASSISTENTE:
+  Il trapianto avverrà in campo aperto o sotto serra?
+
+[16:34:35] UTENTE:
+  Campo aperto
+
+[16:34:36] ASSISTENTE:
+  Il trapianto viene effettuato su baula?
+
+[16:34:41] UTENTE:
+  Sì, altezza 15 cm, larghezza 80 cm, inter baula 30 cm, spazio tra baule 140 cm
+
+[16:34:42] ASSISTENTE:
+  Il trapianto viene effettuato sopra pacciamatura?
+
+[16:34:49] UTENTE:
+  Sì, larghezza telo 120 cm
+
+[16:34:51] ASSISTENTE:
+  Invece qual è la tipologia del terreno?
+
+Opzioni:
+1. Argilloso / Tenace
+2. Sabbioso / Leggero
+
+[16:34:54] UTENTE:
+  Argilloso
+
+[16:34:56] ASSISTENTE:
+  Dammi qualche info sul trattore. Qual è la misura interna delle ruote in cm?
+
+[16:35:11] UTENTE:
+  150
+
+[16:35:13] ASSISTENTE:
+  Quanti cavalli (HP) ha il trattore?
+
+[16:35:13] UTENTE:
+  75
+
+[16:35:14] ASSISTENTE:
+  Seleziona gli accessori primari di telaio necessari:
+
+[16:35:17] UTENTE:
+  ["Spandiconcime","Stendi Manicrietta"]
+
+[16:35:21] ASSISTENTE:
+  Seleziona gli accessori secondari di telaio:
+
+[16:35:23] UTENTE:
+  ["Tracciatori fila manuali"]
+
+[16:35:23] ASSISTENTE:
+  Infine, seleziona gli accessori di elemento:
+
+[16:35:27] UTENTE:
+  ["Coltello appisolo"]
+
+[16:35:28] ASSISTENTE:
+  Hai delle note o richieste particolari da aggiungere?
+
+[16:35:31] UTENTE:
+  noi
+
+[16:35:32] ASSISTENTE:
+  Sulla base di questi dati, sei interessato a ricevere informazioni commerciali o un preventivo?
+
+[16:35:36] UTENTE:
+  ["Sì"]
+
+
+================================================================================
+
+DATI CONFIGURAZIONE RACCOLTI
+--------------------------------------------------------------------------------
+
+FASE 1: Caratteristiche della Pianta
+
+  Coltura: None
+  Tipo radice: Zolla Cubica
+
+FASE 2: Sesto di Impianto
+
+  Tipologia: Binate
+
+FASE 3: Trapianto e Terreno
+
+  Ambiente: None
+  Su baula: No
+  Con pacciamatura: No
+  Tipo terreno: Argilloso
+
+FASE 4: Macchinario (Trattore)
+
+  Ruote interne: None cm
+  Potenza: 75 HP
+
+FASE 5: Accessori
+
+  Accessori primari telaio: Nessuno
+  Accessori secondari:       Nessuno
+  Accessori di elemento:     Nessuno
+
+FASE 6: Note Aggiuntive
+
+  No
+
+
+================================================================================
+
+Grazie per aver utilizzato il configuratore Spapperi.
+Sarai ricontattato al più presto dal nostro team commerciale.

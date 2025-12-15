@@ -107,7 +107,7 @@ export default function ConfiguratorPage() {
             const data = await res.json();
 
             setMessages([{
-                role: 'ai',
+                role: 'assistant',
                 text: data.response,
                 image_url: data.image_url,
                 ui_type: data.ui_type,
@@ -121,7 +121,7 @@ export default function ConfiguratorPage() {
 
         } catch (e) {
             console.error(e);
-            setMessages([{ role: 'ai', text: "Errore di connessione. Riprova più tardi." }]);
+            setMessages([{ role: 'assistant', text: "Errore di connessione. Riprova più tardi." }]);
         } finally {
             setIsLoading(false);
         }
@@ -154,7 +154,7 @@ export default function ConfiguratorPage() {
 
             const data = await res.json();
             setMessages(prev => [...prev, {
-                role: 'ai',
+                role: 'assistant',
                 text: data.response,
                 image_url: data.image_url,
                 ui_type: data.ui_type,
@@ -169,7 +169,7 @@ export default function ConfiguratorPage() {
 
         } catch (error) {
             console.error(error);
-            setMessages(prev => [...prev, { role: 'ai', text: "Mi dispiace, c'è stato un problema di comunicazione con il server." }]);
+            setMessages(prev => [...prev, { role: 'assistant', text: "Mi dispiace, c'è stato un problema di comunicazione con il server." }]);
         } finally {
             setIsLoading(false);
         }
@@ -202,7 +202,7 @@ export default function ConfiguratorPage() {
 
             const data = await res.json();
             setMessages(prev => [...prev, {
-                role: 'ai',
+                role: 'assistant',
                 text: data.response,
                 image_url: data.image_url,
                 ui_type: data.ui_type,
@@ -216,7 +216,7 @@ export default function ConfiguratorPage() {
 
         } catch (error) {
             console.error(error);
-            setMessages(prev => [...prev, { role: 'ai', text: "Mi dispiace, c'è stato un problema di comunicazione con il server." }]);
+            setMessages(prev => [...prev, { role: 'assistant', text: "Mi dispiace, c'è stato un problema di comunicazione con il server." }]);
         } finally {
             setIsLoading(false);
         }
@@ -358,8 +358,8 @@ export default function ConfiguratorPage() {
                                             </div>
                                         )}
 
-                                        {/* Checkbox UI for accessory selection */}
-                                        {msg.ui_type === 'checkbox' && msg.options && i === messages.length - 1 && (
+                                        {/* Checkbox/Radio UI for selections */}
+                                        {(msg.ui_type === 'checkbox' || msg.ui_type === 'radio') && msg.options && msg.role === 'assistant' && (
                                             <div className="mt-4 space-y-3">
                                                 {msg.options.map((option, idx) => (
                                                     <label
@@ -370,10 +370,16 @@ export default function ConfiguratorPage() {
                                                             type="checkbox"
                                                             checked={selectedCheckboxes.includes(option)}
                                                             onChange={(e) => {
-                                                                if (e.target.checked) {
-                                                                    setSelectedCheckboxes(prev => [...prev, option]);
+                                                                if (msg.ui_type === 'radio') {
+                                                                    // Single selection for radio
+                                                                    setSelectedCheckboxes(e.target.checked ? [option] : []);
                                                                 } else {
-                                                                    setSelectedCheckboxes(prev => prev.filter(item => item !== option));
+                                                                    // Multi selection for checkbox
+                                                                    if (e.target.checked) {
+                                                                        setSelectedCheckboxes(prev => [...prev, option]);
+                                                                    } else {
+                                                                        setSelectedCheckboxes(prev => prev.filter(item => item !== option));
+                                                                    }
                                                                 }
                                                             }}
                                                             className="w-5 h-5 text-spapperi-red rounded focus:ring-2 focus:ring-spapperi-red"
@@ -384,7 +390,7 @@ export default function ConfiguratorPage() {
 
                                                 <button
                                                     onClick={sendCheckboxSelection}
-                                                    disabled={isLoading}
+                                                    disabled={isLoading || selectedCheckboxes.length === 0}
                                                     className="mt-4 w-full bg-spapperi-red text-white px-6 py-3 rounded-xl font-semibold hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                                 >
                                                     {isLoading ? 'Invio...' : 'Conferma Selezione'}
