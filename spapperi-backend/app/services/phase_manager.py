@@ -335,6 +335,7 @@ class PhaseManager:
         
         elif field == "layout_details":
             save_data["layout_details"] = {
+                "number_of_rows": extracted_data.get("number_of_rows") or extracted_data.get("rows"),
                 "IF": extracted_data.get("IF"),
                 "IP": extracted_data.get("IP"),
                 "IB": extracted_data.get("IB")  # None for single rows
@@ -384,7 +385,13 @@ class PhaseManager:
             save_data["user_notes"] = extracted_data.get("notes") or extracted_data.get("raw")
         
         elif field == "is_interested":
-            save_data["is_interested"] = extracted_data.get("is_interested", False)
+            # Handle checkbox response ["Sì"] or ["No"]
+            print(f"DEBUG is_interested: extracted_data = {extracted_data}")
+            # OpenAI extracts as 'interested_in_commercial_info_or_quote'
+            value = extracted_data.get("interested_in_commercial_info_or_quote") or extracted_data.get("raw", "")
+            is_yes = "sì" in str(value).lower() or "si" in str(value).lower() or "yes" in str(value).lower()
+            print(f"DEBUG is_interested: value='{value}', is_yes={is_yes}")
+            save_data["is_interested"] = is_yes
         
         elif field == "contact_info":
             save_data["contact_email"] = extracted_data.get("email")
