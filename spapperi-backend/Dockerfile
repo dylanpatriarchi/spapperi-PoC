@@ -9,7 +9,16 @@ WORKDIR /app
 
 # Install system dependencies
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends gcc libpq-dev && \
+    apt-get install -y --no-install-recommends \
+    gcc \
+    libpq-dev \
+    # WeasyPrint dependencies
+    libpango-1.0-0 \
+    libpangoft2-1.0-0 \
+    libharfbuzz-subset0 \
+    libjpeg62-turbo \
+    libopenjp2-7 \
+    libxcb1 && \
     rm -rf /var/lib/apt/lists/*
 
 # Install python dependencies
@@ -27,7 +36,15 @@ RUN addgroup --system app && adduser --system --group app
 
 # Install Runtime Dependencies (libpq is needed for psycopg2)
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends libpq5 && \
+    apt-get install -y --no-install-recommends \
+    libpq5 \
+    # WeasyPrint dependencies
+    libpango-1.0-0 \
+    libpangoft2-1.0-0 \
+    libharfbuzz-subset0 \
+    libjpeg62-turbo \
+    libopenjp2-7 \
+    libxcb1 && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy wheels from builder

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Robot, CheckCircle, PaperPlaneRight, ArrowLeft, XCircle } from "@phosphor-icons/react";
+import { Robot, CheckCircle, PaperPlaneRight, ArrowLeft, XCircle, DownloadSimple } from "@phosphor-icons/react";
 import Link from 'next/link';
 import Navbar from "@/components/Navbar";
 
@@ -15,6 +15,7 @@ export default function ConfiguratorPage() {
         image_url?: string;
         ui_type?: string;
         options?: string[];
+        export_file?: string;
     }>>([]);
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -54,6 +55,15 @@ export default function ConfiguratorPage() {
                         text: msg.content,
                         image_url: msg.image_url
                     }));
+
+                    // If conversation is complete, ensure last message has export link
+                    if (data.conversation && data.conversation.is_complete && formattedMessages.length > 0) {
+                        const lastMsg = formattedMessages[formattedMessages.length - 1];
+                        if (lastMsg.role === 'ai') {
+                            lastMsg.export_file = `/api/export/${convId}/pdf`;
+                        }
+                    }
+
                     setMessages(formattedMessages);
                     return; // Messages loaded successfully
                 }
@@ -158,7 +168,8 @@ export default function ConfiguratorPage() {
                 text: data.response,
                 image_url: data.image_url,
                 ui_type: data.ui_type,
-                options: data.options
+                options: data.options,
+                export_file: data.export_file
             }]);
 
             // Persist new ID if generated
@@ -206,7 +217,8 @@ export default function ConfiguratorPage() {
                 text: data.response,
                 image_url: data.image_url,
                 ui_type: data.ui_type,
-                options: data.options
+                options: data.options,
+                export_file: data.export_file
             }]);
 
             if (data.conversation_id && data.conversation_id !== conversationId) {
@@ -356,6 +368,21 @@ export default function ConfiguratorPage() {
                                                     className="w-full h-auto"
                                                 />
                                             </div>
+
+                                        )}
+
+                                        {msg.export_file && (
+                                            <div className="mt-6">
+                                                <a
+                                                    href={`http://localhost:8000${msg.export_file}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center gap-2 bg-spapperi-black text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-800 transition-colors shadow-md"
+                                                >
+                                                    <DownloadSimple size={20} weight="bold" />
+                                                    Scarica Report PDF
+                                                </a>
+                                            </div>
                                         )}
 
                                         {/* Checkbox/Radio UI for selections */}
@@ -453,8 +480,9 @@ export default function ConfiguratorPage() {
                             </button>
                         </div>
                     </motion.div>
-                )}
-            </AnimatePresence>
-        </main>
+                )
+                }
+            </AnimatePresence >
+        </main >
     );
 }

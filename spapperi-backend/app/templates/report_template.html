@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Report Configurazione Spapperi</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            color: #1a1a1a;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #d20a10;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .logo {
+            width: 150px;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #d20a10;
+            text-transform: uppercase;
+        }
+        .section {
+            margin-bottom: 25px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #d20a10;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+        .grid {
+            display: table;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .row {
+            display: table-row;
+        }
+        .label {
+            display: table-cell;
+            font-weight: bold;
+            width: 40%;
+            padding: 5px 0;
+            color: #555;
+        }
+        .value {
+            display: table-cell;
+            width: 60%;
+            padding: 5px 0;
+            font-weight: normal;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+        /* Specific styles for lists in values */
+        ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-container">
+            <!-- Logo placeholder - will be replaced by actual image path during generation -->
+            <img src="{{ logo_path }}" alt="Spapperi Logo" class="logo">
+        </div>
+        <div class="title">Configurazione Trapiantatrice</div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Informazioni Generali</div>
+        <div class="grid">
+            <div class="row">
+                <div class="label">ID Configurazione</div>
+                <div class="value">{{ config.id }}</div>
+            </div>
+            <div class="row">
+                <div class="label">Data</div>
+                <div class="value">{{ config.created_at.strftime('%d/%m/%Y %H:%M') }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Dettagli Coltura</div>
+        <div class="grid">
+            <div class="row">
+                <div class="label">Coltura</div>
+                <div class="value">{{ config.crop_type }}</div>
+            </div>
+            <div class="row">
+                <div class="label">Tipo Radice</div>
+                <div class="value">{{ config.root_type }}</div>
+            </div>
+             {% if config.root_dimensions %}
+            <div class="row">
+                <div class="label">Dimensioni Radice</div>
+                <div class="value">
+                    {% for key, val in config.root_dimensions.items() %}
+                        {{ key }}: {{ val }} cm{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Terreno e Impianto</div>
+        <div class="grid">
+            <div class="row">
+                <div class="label">Tipo Terreno</div>
+                <div class="value">{{ config.soil_type }}</div>
+            </div>
+            <div class="row">
+                <div class="label">Configurazione File</div>
+                <div class="value">{{ config.row_type }}</div>
+            </div>
+            {% if config.layout_details %}
+            <div class="row">
+                <div class="label">Dettagli Sesto</div>
+                <div class="value">
+                    {% if config.layout_details.number_of_rows %}
+                        Num. File: {{ config.layout_details.number_of_rows }}<br>
+                    {% endif %}
+                    Interfila (IF): {{ config.layout_details.IF }} cm<br>
+                    Interpianta (IP): {{ config.layout_details.IP }} cm
+                    {% if config.layout_details.IB %}
+                        <br>Interbina (IB): {{ config.layout_details.IB }} cm
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if config.is_raised_bed %}
+            <div class="row">
+                <div class="label">Baulatura</div>
+                <div class="value">
+                    Sì (AT: {{ config.raised_bed_details.AT }}, LT: {{ config.raised_bed_details.LT }}, IT: {{ config.raised_bed_details.IT }}, ST: {{ config.raised_bed_details.ST }})
+                </div>
+            </div>
+            {% else %}
+            <div class="row">
+                <div class="label">Baulatura</div>
+                <div class="value">No</div>
+            </div>
+            {% endif %}
+
+            <div class="row">
+                <div class="label">Pacciamatura</div>
+                <div class="value">
+                     {% if config.is_mulch %}
+                        Sì ({{ config.mulch_details }})
+                    {% else %}
+                        No
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Trattore</div>
+        <div class="grid">
+            <div class="row">
+                <div class="label">Potenza</div>
+                <div class="value">{{ config.tractor_hp }} HP</div>
+            </div>
+            {% if config.wheel_distance_internal %}
+            <div class="row">
+                <div class="label">Carreggiata</div>
+                <div class="value">Int: {{ config.wheel_distance_internal }} cm / Est: {{ config.wheel_distance_external }} cm</div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Accessori Selezionati</div>
+        <div class="grid">
+            {% if config.accessories_primary and config.accessories_primary|length > 0 %}
+            <div class="row">
+                <div class="label">Primari (Telaio)</div>
+                <div class="value">
+                    <ul>
+                    {% for acc in config.accessories_primary %}
+                        {% if acc != "Nessuno" %}
+                            <li>{{ acc }}</li>
+                        {% endif %}
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if config.accessories_secondary and config.accessories_secondary|length > 0 %}
+            <div class="row">
+                <div class="label">Secondari (Telaio)</div>
+                <div class="value">
+                    <ul>
+                    {% for acc in config.accessories_secondary %}
+                        {% if acc != "Nessuno" %}
+                            <li>{{ acc }}</li>
+                        {% endif %}
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if config.accessories_element and config.accessories_element|length > 0 %}
+            <div class="row">
+                <div class="label">Elemento</div>
+                <div class="value">
+                    <ul>
+                    {% for acc in config.accessories_element %}
+                        {% if acc != "Nessuno" %}
+                            <li>{{ acc }}</li>
+                        {% endif %}
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if config.user_notes and config.user_notes != 'No' %}
+    <div class="section">
+        <div class="section-title">Note Cliente</div>
+        <div class="grid">
+            <div class="row">
+                <div class="value">{{ config.user_notes }}</div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="section">
+        <div class="section-title">Contatti</div>
+        <div class="grid">
+            <div class="row">
+                <div class="label">Email</div>
+                <div class="value">{{ config.contact_email }}</div>
+            </div>
+            <div class="row">
+                <div class="label">P.IVA</div>
+                <div class="value">{{ config.vat_number }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Spapperi S.r.l. - Via Delle Industrie, 12 - 06018 Città di Castello (PG) - Italy</p>
+        <p>Configurazione generata automaticamente da Spapperi AI Configurator</p>
+    </div>
+</body>
+</html>

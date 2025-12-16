@@ -81,5 +81,9 @@ ALTER TABLE conversations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE configurations ENABLE ROW LEVEL SECURITY;
 
 -- For now, allow all (will restrict once Auth is integrated)
+-- For now, allow all (will restrict once Auth is integrated)
+DROP POLICY IF EXISTS "Allow public access for POC" ON conversations;
 CREATE POLICY "Allow public access for POC" ON conversations FOR ALL USING (true);
+
+DROP POLICY IF EXISTS "Allow public access for POC" ON configurations;
 CREATE POLICY "Allow public access for POC" ON configurations FOR ALL USING (true);

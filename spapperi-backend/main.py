@@ -11,6 +11,7 @@ from app.services.db import db
 from app.services.phase_manager import phase_manager
 from app.services.openai_validator import ai_validator
 from app.utils.export import export_service
+from app.services.pdf_service import generate_report
 
 
 @asynccontextmanager
@@ -152,9 +153,15 @@ async def chat(request: ChatRequest):
         if next_phase == "complete":
             # Generate export file
             await db.mark_conversation_complete(conv_id)
-            export_path = await export_service.generate_txt_report(conv_id)
             
-            response_text = "Grazie! I dati sono stati registrati. Ti è stato inviato via mail il report. A presto! 🎉"
+            # Generate TXT report (legacy/backup)
+            await export_service.generate_txt_report(conv_id)
+            
+            # Generate PDF report
+            config_data = await db.get_configuration_data(conv_id)
+            pdf_path = generate_report(config_data, f"spapperi_config_{conv_id}")
+            
+            response_text = "Grazie! I dati sono stati registrati. Puoi scaricare il riepilogo in PDF qui sotto. 📄\n\nTi è stato inviato anche via mail. A presto! 🎉"
             
             await db.save_message(
                 conversation_id=conv_id,
@@ -167,7 +174,7 @@ async def chat(request: ChatRequest):
                 conversation_id=str(conv_id),
                 current_phase=next_phase,
                 is_complete=True,
-                export_file=f"/api/export/{conv_id}"
+                export_file=f"/api/export/{conv_id}/pdf"
             )
         
         # Small delay to ensure DB writes complete before fetching for conditional logic
@@ -240,6 +247,38 @@ async def export_report(conversation_id: str):
     except Exception as e:
         print(f"Error generating report: {e}")
         raise HTTPException(status_code=500, detail="Failed to generate report")
+
+
+@app.get("/api/export/{conversation_id}/pdf")
+async def export_pdf_report(conversation_id: str):
+    """
+    Download PDF report for a conversation.
+    """
+    try:
+        conv_id = UUID(conversation_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid conversation ID")
+    
+    # PDF functionality relies on file existing in exports directory
+    # It should have been generated at completion.
+    # If not, we could regenerate it, but let's try to find it.
+    
+    # For simplicity, we regenerate it to ensure it exists
+    config_data = await db.get_configuration_data(conv_id)
+    if not config_data:
+        raise HTTPException(status_code=404, detail="Configuration not found")
+
+    # Re-generate to ensure latest data and file existence
+    pdf_path = generate_report(config_data, f"spapperi_config_{conv_id}")
+    
+    if pdf_path and os.path.exists(pdf_path):
+        return FileResponse(
+            pdf_path,
+            media_type="application/pdf",
+            filename=f"configurazione_spapperi_{conversation_id}.pdf"
+        )
+    else:
+        raise HTTPException(status_code=500, detail="Failed to generate PDF report")
 
 
 @app.get("/api/conversation/{conversation_id}/history")

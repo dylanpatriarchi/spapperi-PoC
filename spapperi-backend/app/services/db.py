@@ -27,6 +27,33 @@ class DatabaseService:
             max_size=10,
             command_timeout=60
         )
+        
+        # Initialize Schema if needed
+        await cls._init_schema()
+
+    @classmethod
+    async def _init_schema(cls):
+        """Execute schema.sql to create tables if not exist"""
+        schema_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "schema.sql")
+        if not os.path.exists(schema_path):
+             # Fallback for Docker path
+             schema_path = "/app/schema.sql"
+        
+        if os.path.exists(schema_path):
+            with open(schema_path, "r") as f:
+                schema_sql = f.read()
+                
+            async with cls.pool.acquire() as conn:
+                # Check if tables exist to avoid unnecessary work/errors
+                # But IF NOT EXISTS in SQL handles it gracefully usually.
+                # Let's just execute.
+                try:
+                    await conn.execute(schema_sql)
+                    print("✓ Database schema initialized")
+                except Exception as e:
+                    print(f"Schema initialization warning: {e}")
+        else:
+            print(f"Warning: schema.sql not found at {schema_path}")
     
     @classmethod
     async def close(cls):
