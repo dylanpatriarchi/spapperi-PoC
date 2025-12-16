@@ -377,7 +377,7 @@ export default function ConfiguratorPage() {
                                                     href={`http://localhost:8000${msg.export_file}`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="inline-flex items-center gap-2 bg-spapperi-black text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-800 transition-colors shadow-md"
+                                                    className="group inline-flex items-center gap-3 bg-spapperi-black text-white px-8 py-4 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-spapperi-red hover:gap-5 transition-all duration-300 shadow-md"
                                                 >
                                                     <DownloadSimple size={20} weight="bold" />
                                                     Scarica Report PDF

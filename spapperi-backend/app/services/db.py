@@ -234,7 +234,21 @@ class DatabaseService:
                 """,
                 conversation_id
             )
-            return dict(row) if row else None
+            if not row:
+                return None
+            
+            result = dict(row)
+            # Manually deserialize JSONB fields that asyncpg returns as strings
+            json_fields = ["root_dimensions", "layout_details", "raised_bed_details", "mulch_details"]
+            for field in json_fields:
+                val = result.get(field)
+                if val and isinstance(val, str):
+                    try:
+                        result[field] = json.loads(val)
+                    except json.JSONDecodeError:
+                        pass # Keep as string if parsing fails
+            
+            return result
 
 
 # Global instance

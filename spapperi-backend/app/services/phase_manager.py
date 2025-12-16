@@ -304,9 +304,12 @@ class PhaseManager:
         existing_data: Dict[str, Any]
     ):
         """Save extracted field data to configuration"""
-        save_data = {}
+        if not extracted_data:
+            extracted_data = {}
+            
+        save_data = {"conversation_id": conversation_id}
         
-        # Map extracted data to database fields
+        # Mapping logic based on field typea to database fields
         if field == "crop_type":
             save_data["crop_type"] = extracted_data.get("crop_type") or extracted_data.get("raw")
         
