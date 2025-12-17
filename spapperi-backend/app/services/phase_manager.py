@@ -17,7 +17,7 @@ class PhaseManager:
     PHASES = {
         "phase_1_1": {
             "question": "Per iniziare, potresti indicarmi cosa devi trapiantare?",
-            "expected_format": "Testo libero: nome della coltura (es: pomodori, insalata, fragole)",
+            "expected_format": "Testo libero: nome della coltura (es: pomodori, insalata, fragole). RESTITUISCI JSON con key 'crop_type'.",
             "field": "crop_type",
             "next_phase": "phase_1_2"
         },
@@ -45,18 +45,20 @@ class PhaseManager:
             "question": "Passiamo al sesto di impianto. Si tratta di file singole o file binate?",
             "expected_format": "Scelta: Singole o Binate",
             "field": "row_type",
+            "ui_type": "radio",
+            "options": ["File singole", "File binate"],
             "next_phase": "phase_2_2"
         },
         "phase_2_2": {
             "question": lambda data: (
                 print(f"DEBUG phase_2_2: row_type = {data.get('row_type')}") or
                 "Inserisci il numero di file, l'interfila (IF) in cm e l'interpianta (IP) in cm."
-                if (data.get("row_type") or "").lower() in ["singole", "singolo", "single"]
+                if (data.get("row_type") or "").lower() in ["singole", "singolo", "single", "file singole"]
                 else "Inserisci il numero di bine, l'interfila (IF) in cm, l'interpianta (IP) in cm e l'interbina (IB) in cm."
             ),
             "expected_format": lambda data: (
                 "3 valori: numero file, IF (cm), IP (cm)"
-                if (data.get("row_type") or "").lower() in ["singole", "singolo", "single"]
+                if (data.get("row_type") or "").lower() in ["singole", "singolo", "single", "file singole"]
                 else "4 valori: numero bine, IF (cm), IP (cm), IB (cm)"
             ),
             "field": "layout_details",
@@ -66,16 +68,18 @@ class PhaseManager:
             "question": "Il trapianto avverrà in campo aperto o sotto serra?",
             "expected_format": "Campo aperto o Serra",
             "field": "environment",
+            "ui_type": "radio",
+            "options": ["Campo aperto", "Serra"],
             "next_phase": "phase_3_2"
         },
         "phase_3_2": {
-            "question": "Il trapianto viene effettuato su baula?",
+            "question": "Il trapianto viene effettuato su baula? Se sì, inserisci: Altezza baula (AT), Larghezza (LT), Inter baula (IT) e Spazio tra baule (ST) in cm.",
             "expected_format": "RESTITUISCI JSON con keys: 'is_raised_bed' (boolean), 'AT', 'LT', 'IT', 'ST' (numeri in cm). Se No, is_raised_bed=false.",
             "field": "is_raised_bed",
             "next_phase": "phase_3_3"
         },
         "phase_3_3": {
-            "question": "Il trapianto viene effettuato sopra pacciamatura?",
+            "question": "Il trapianto viene effettuato sopra pacciamatura? Se sì, inserisci la Larghezza telo (LP) in cm.",
             "expected_format": "RESTITUISCI JSON con keys: 'is_mulch' (boolean), 'LP' (numero in cm). Se No, is_mulch=false.",
             "field": "is_mulch",
             "next_phase": "phase_3_4"
@@ -86,8 +90,8 @@ class PhaseManager:
             "field": "soil_type",
             "ui_type": "radio",
             "options": [
-                "Argilloso / Tenace",
-                "Sabbioso / Leggero"
+                "Argilloso",
+                "Sabbioso"
             ],
             "next_phase": "phase_4_1"
         },
