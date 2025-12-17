@@ -23,7 +23,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./source:/app/source
+      - ./spapperi-backend/source:/app/source
       - ./spapperi-backend:/app
     environment:
       - DATABASE_URL=postgresql://postgres:password@db:5432/spapperi

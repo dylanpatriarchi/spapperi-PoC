@@ -16,7 +16,7 @@ os.makedirs(EXPORT_DIR, exist_ok=True)
 # Initialize Jinja2 environment
 env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
 
-def generate_report(config_data: Dict[str, Any], filename_prefix: str = "spapperi_config") -> str:
+def generate_report(config_data: Dict[str, Any], filename_prefix: str = "spapperi_config", recommendation: str = None) -> str:
     """
     Generate a PDF report from the configuration data.
     
@@ -43,6 +43,7 @@ def generate_report(config_data: Dict[str, Any], filename_prefix: str = "spapper
         html_content = template.render(
             config=config_data,
             logo_path=logo_url,
+            recommendation=recommendation,
             generation_time=datetime.now()
         )
         

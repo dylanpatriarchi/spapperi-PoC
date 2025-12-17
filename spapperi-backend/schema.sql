@@ -76,14 +76,39 @@ CREATE TABLE IF NOT EXISTS configurations (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- RLS Policies (Security Layer)
+-- Create RLS policies (adjust as needed for production)
+-- Enable Row Level Security
 ALTER TABLE conversations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
 ALTER TABLE configurations ENABLE ROW LEVEL SECURITY;
 
--- For now, allow all (will restrict once Auth is integrated)
--- For now, allow all (will restrict once Auth is integrated)
-DROP POLICY IF EXISTS "Allow public access for POC" ON conversations;
-CREATE POLICY "Allow public access for POC" ON conversations FOR ALL USING (true);
+-- Create policies (Idempotent approach)
+DO $$
+BEGIN
+    DROP POLICY IF EXISTS "Allow public access for POC" ON conversations;
+    CREATE POLICY "Allow public access for POC" ON conversations FOR ALL USING (true);
+    
+    DROP POLICY IF EXISTS "Allow public access for POC" ON messages;
+    CREATE POLICY "Allow public access for POC" ON messages FOR ALL USING (true);
+    
+    DROP POLICY IF EXISTS "Allow public access for POC" ON configurations;
+    CREATE POLICY "Allow public access for POC" ON configurations FOR ALL USING (true);
+END $$;
 
-DROP POLICY IF EXISTS "Allow public access for POC" ON configurations;
-CREATE POLICY "Allow public access for POC" ON configurations FOR ALL USING (true);
+
+-- Products table for RAG
+CREATE TABLE IF NOT EXISTS products (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT NOT NULL,
+    description TEXT,
+    category TEXT,
+    features TEXT[],
+    embedding vector(1536), -- OpenAI text-embedding-3-small dimension
+    metadata JSONB,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Index for faster vector search (HNSW)
+-- Note: 'vector_l2_ops' for Euclidean distance, 'vector_cosine_ops' for Cosine similarity
+-- Using cosine distance is usually preferred for embeddings normalization
+CREATE INDEX IF NOT EXISTS products_embedding_idx ON products USING hnsw (embedding vector_cosine_ops);

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
     <title>Report Configurazione Spapperi</title>
@@ -8,6 +9,7 @@
             size: A4;
             margin: 2cm;
         }
+
         body {
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             color: #1a1a1a;
@@ -15,6 +17,7 @@
             margin: 0;
             padding: 0;
         }
+
         .header {
             display: flex;
             justify-content: space-between;
@@ -23,18 +26,22 @@
             padding-bottom: 20px;
             margin-bottom: 30px;
         }
+
         .logo {
             width: 150px;
         }
+
         .title {
             font-size: 24px;
             font-weight: bold;
             color: #d20a10;
             text-transform: uppercase;
         }
+
         .section {
             margin-bottom: 25px;
         }
+
         .section-title {
             font-size: 18px;
             font-weight: bold;
@@ -43,14 +50,17 @@
             padding-bottom: 5px;
             margin-bottom: 10px;
         }
+
         .grid {
             display: table;
             width: 100%;
             margin-bottom: 10px;
         }
+
         .row {
             display: table-row;
         }
+
         .label {
             display: table-cell;
             font-weight: bold;
@@ -58,12 +68,14 @@
             padding: 5px 0;
             color: #555;
         }
+
         .value {
             display: table-cell;
             width: 60%;
             padding: 5px 0;
             font-weight: normal;
         }
+
         .footer {
             position: fixed;
             bottom: 0;
@@ -75,6 +87,7 @@
             border-top: 1px solid #ddd;
             padding-top: 10px;
         }
+
         /* Specific styles for lists in values */
         ul {
             margin: 0;
@@ -82,6 +95,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="header">
         <div class="logo-container">
@@ -116,12 +130,12 @@
                 <div class="label">Tipo Radice</div>
                 <div class="value">{{ config.root_type }}</div>
             </div>
-             {% if config.root_dimensions %}
+            {% if config.root_dimensions %}
             <div class="row">
                 <div class="label">Dimensioni Radice</div>
                 <div class="value">
                     {% for key, val in config.root_dimensions.items() %}
-                        {{ key }}: {{ val }} cm{% if not loop.last %}, {% endif %}
+                    {{ key }}: {{ val }} cm{% if not loop.last %}, {% endif %}
                     {% endfor %}
                 </div>
             </div>
@@ -145,22 +159,23 @@
                 <div class="label">Dettagli Sesto</div>
                 <div class="value">
                     {% if config.layout_details.number_of_rows %}
-                        Num. File: {{ config.layout_details.number_of_rows }}<br>
+                    Num. File: {{ config.layout_details.number_of_rows }}<br>
                     {% endif %}
                     Interfila (IF): {{ config.layout_details.IF }} cm<br>
                     Interpianta (IP): {{ config.layout_details.IP }} cm
                     {% if config.layout_details.IB %}
-                        <br>Interbina (IB): {{ config.layout_details.IB }} cm
+                    <br>Interbina (IB): {{ config.layout_details.IB }} cm
                     {% endif %}
                 </div>
             </div>
             {% endif %}
-            
+
             {% if config.is_raised_bed %}
             <div class="row">
                 <div class="label">Baulatura</div>
                 <div class="value">
-                    Sì (AT: {{ config.raised_bed_details.AT }}, LT: {{ config.raised_bed_details.LT }}, IT: {{ config.raised_bed_details.IT }}, ST: {{ config.raised_bed_details.ST }})
+                    Sì (AT: {{ config.raised_bed_details.AT }}, LT: {{ config.raised_bed_details.LT }}, IT: {{
+                    config.raised_bed_details.IT }}, ST: {{ config.raised_bed_details.ST }})
                 </div>
             </div>
             {% else %}
@@ -173,10 +188,10 @@
             <div class="row">
                 <div class="label">Pacciamatura</div>
                 <div class="value">
-                     {% if config.is_mulch %}
-                        Sì ({{ config.mulch_details }})
+                    {% if config.is_mulch %}
+                    Sì ({{ config.mulch_details }})
                     {% else %}
-                        No
+                    No
                     {% endif %}
                 </div>
             </div>
@@ -193,7 +208,8 @@
             {% if config.wheel_distance_internal %}
             <div class="row">
                 <div class="label">Carreggiata</div>
-                <div class="value">Int: {{ config.wheel_distance_internal }} cm / Est: {{ config.wheel_distance_external }} cm</div>
+                <div class="value">Int: {{ config.wheel_distance_internal }} cm / Est: {{ config.wheel_distance_external
+                    }} cm</div>
             </div>
             {% endif %}
         </div>
@@ -207,11 +223,11 @@
                 <div class="label">Primari (Telaio)</div>
                 <div class="value">
                     <ul>
-                    {% for acc in config.accessories_primary %}
+                        {% for acc in config.accessories_primary %}
                         {% if acc != "Nessuno" %}
-                            <li>{{ acc }}</li>
+                        <li>{{ acc }}</li>
                         {% endif %}
-                    {% endfor %}
+                        {% endfor %}
                     </ul>
                 </div>
             </div>
@@ -222,11 +238,11 @@
                 <div class="label">Secondari (Telaio)</div>
                 <div class="value">
                     <ul>
-                    {% for acc in config.accessories_secondary %}
+                        {% for acc in config.accessories_secondary %}
                         {% if acc != "Nessuno" %}
-                            <li>{{ acc }}</li>
+                        <li>{{ acc }}</li>
                         {% endif %}
-                    {% endfor %}
+                        {% endfor %}
                     </ul>
                 </div>
             </div>
@@ -237,11 +253,11 @@
                 <div class="label">Elemento</div>
                 <div class="value">
                     <ul>
-                    {% for acc in config.accessories_element %}
+                        {% for acc in config.accessories_element %}
                         {% if acc != "Nessuno" %}
-                            <li>{{ acc }}</li>
+                        <li>{{ acc }}</li>
                         {% endif %}
-                    {% endfor %}
+                        {% endfor %}
                     </ul>
                 </div>
             </div>
@@ -274,9 +290,21 @@
         </div>
     </div>
 
+    {% if recommendation %}
+    <div class="section">
+        <div class="section-title">Consiglio dell'Esperto (AI)</div>
+        <div class="grid">
+            <div class="row">
+                <div class="value" style="width: 100%; white-space: pre-wrap;">{{ recommendation }}</div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     <div class="footer">
         <p>Spapperi S.r.l. - Via Delle Industrie, 12 - 06018 Città di Castello (PG) - Italy</p>
         <p>Configurazione generata automaticamente da Spapperi AI Configurator</p>
     </div>
 </body>
+
 </html>

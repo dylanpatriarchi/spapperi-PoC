@@ -9,8 +9,11 @@ from uuid import UUID
 from app.models.conversation import ChatRequest, ChatResponse
 from app.services.db import db
 from app.services.phase_manager import phase_manager
-from app.services.openai_validator import ai_validator
+from app.services.db import db
+from app.services.rag_service import rag_service
+from app.services.pdf_service import generate_report
 from app.utils.export import export_service
+from app.services.openai_validator import ai_validator
 from app.services.pdf_service import generate_report
 
 
@@ -158,8 +161,19 @@ async def chat(request: ChatRequest):
             await export_service.generate_txt_report(conv_id)
             
             # Generate PDF report
+            # Generate PDF report
             config_data = await db.get_configuration_data(conv_id)
-            pdf_path = generate_report(config_data, f"spapperi_config_{conv_id}")
+            
+            # Generate RAG recommendation
+            print("Generating product recommendation...")
+            try:
+                recommendation = await rag_service.generate_recommendation(config_data)
+                print("Recommendation generated successfully")
+            except Exception as e:
+                print(f"Error generating recommendation: {e}")
+                recommendation = None
+            
+            pdf_path = generate_report(config_data, f"spapperi_config_{conv_id}", recommendation)
             
             response_text = "Grazie! I dati sono stati registrati. Puoi scaricare il riepilogo in PDF qui sotto. 📄\n\nTi è stato inviato anche via mail. A presto! 🎉"
             
@@ -269,7 +283,18 @@ async def export_pdf_report(conversation_id: str):
         raise HTTPException(status_code=404, detail="Configuration not found")
 
     # Re-generate to ensure latest data and file existence
-    pdf_path = generate_report(config_data, f"spapperi_config_{conv_id}")
+    # Re-generate to ensure latest data and file existence
+    
+    # Try to regenerate recommendation too if possible, or just generate without it if it's too slow for a download link?
+    # Ideally should persist recommendation in DB, but for now let's regenerate it on fly or just pass None if we want speed.
+    # Given it's a "Download PDF" button, user expects it. The chat flow already generated it and saved to file system. 
+    # But here we are re-generating. Let's regenerate recommendation to be consistent.
+    try:
+        recommendation = await rag_service.generate_recommendation(config_data)
+    except Exception:
+        recommendation = None
+
+    pdf_path = generate_report(config_data, f"spapperi_config_{conv_id}", recommendation)
     
     if pdf_path and os.path.exists(pdf_path):
         return FileResponse(
