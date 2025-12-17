@@ -70,19 +70,19 @@ class PhaseManager:
         },
         "phase_3_2": {
             "question": "Il trapianto viene effettuato su baula?",
-            "expected_format": "Sì o No. Se Sì, specificare Altezza baula (AT), Larghezza (LT), Inter baula (IT) e Spazio tra baule (ST) in cm.",
+            "expected_format": "RESTITUISCI JSON con keys: 'is_raised_bed' (boolean), 'AT', 'LT', 'IT', 'ST' (numeri in cm). Se No, is_raised_bed=false.",
             "field": "is_raised_bed",
             "next_phase": "phase_3_3"
         },
         "phase_3_3": {
             "question": "Il trapianto viene effettuato sopra pacciamatura?",
-            "expected_format": "Sì o No. Se Sì, specificare Larghezza telo (LP) in cm.",
+            "expected_format": "RESTITUISCI JSON con keys: 'is_mulch' (boolean), 'LP' (numero in cm). Se No, is_mulch=false.",
             "field": "is_mulch",
             "next_phase": "phase_3_4"
         },
         "phase_3_4": {
             "question": "Invece qual è la tipologia del terreno?",
-            "expected_format": "Scelta tra Argilloso o Sabbioso",
+            "expected_format": "RESTITUISCI JSON con key: 'soil_type' (valore: 'Argilloso' o 'Sabbioso')",
             "field": "soil_type",
             "ui_type": "radio",
             "options": [
@@ -93,19 +93,19 @@ class PhaseManager:
         },
         "phase_4_1": {
             "question": "Dammi qualche info sul trattore. Qual è la misura interna delle ruote in cm?",
-            "expected_format": "Valore numerico in centimetri",
+            "expected_format": "RESTITUISCI JSON con key: 'wheel_distance' (numero in cm)",
             "field": "wheel_distance",
             "next_phase": "phase_4_2"
         },
         "phase_4_2": {
             "question": "Quanti cavalli (HP) ha il trattore?",
-            "expected_format": "Valore numerico (HP)",
+            "expected_format": "RESTITUISCI JSON con key: 'tractor_hp' (numero)",
             "field": "tractor_hp",
             "next_phase": "phase_5_1"
         },
         "phase_5_1": {
             "question": "Seleziona gli accessori primari di telaio necessari:",
-            "expected_format": "Lista di accessori scelti (anche vuota)",
+            "expected_format": "RESTITUISCI JSON con key: 'accessories' (lista di stringhe). Se nessuno, lista vuota.",
             "field": "accessories_primary",
             "ui_type": "checkbox",
             "options": [
@@ -121,7 +121,7 @@ class PhaseManager:
         },
         "phase_5_2": {
             "question": "Seleziona gli accessori secondari di telaio:",
-            "expected_format": "Lista di accessori scelti (anche vuota)",
+            "expected_format": "RESTITUISCI JSON con key: 'accessories' (lista di stringhe). Se nessuno, lista vuota.",
             "field": "accessories_secondary",
             "ui_type": "checkbox",
             "options": [
@@ -134,7 +134,7 @@ class PhaseManager:
         },
         "phase_5_3": {
             "question": "Infine, seleziona gli accessori di elemento:",
-            "expected_format": "Lista di accessori scelti (anche vuota)",
+            "expected_format": "RESTITUISCI JSON con key: 'accessories' (lista di stringhe). Se nessuno, lista vuota.",
             "field": "accessories_element",
             "ui_type": "checkbox",
             "options": [
@@ -148,13 +148,13 @@ class PhaseManager:
         },
         "phase_6_1": {
             "question": "Hai delle note o richieste particolari da aggiungere?",
-            "expected_format": "Testo libero (o 'No' se non ci sono note)",
+            "expected_format": "RESTITUISCI JSON con key: 'notes' (stringa) o null se No.",
             "field": "user_notes",
             "next_phase": "phase_6_2"
         },
         "phase_6_2": {
             "question": "Sulla base di questi dati, sei interessato a ricevere informazioni commerciali o un preventivo?",
-            "expected_format": "Sì o No",
+            "expected_format": "RESTITUISCI JSON con key: 'interested_in_commercial_info_or_quote' (Sì/No)",
             "field": "is_interested",
             "ui_type": "radio",
             "options": ["Sì", "No"],
@@ -162,7 +162,7 @@ class PhaseManager:
         },
         "phase_6_3": {
             "question": "Perfetto. Lasciami la tua Partita IVA e la tua Email per ricontattarti con il report pronto.",
-            "expected_format": "Partita IVA ed Email",
+            "expected_format": "RESTITUISCI JSON con keys: 'email', 'vat_number'.",
             "field": "contact_info",
             "next_phase": "complete"
         }
