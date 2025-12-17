@@ -39,11 +39,17 @@ def generate_report(config_data: Dict[str, Any], filename_prefix: str = "spapper
         # Let's use file:// protocol for safety
         logo_url = f"file://{logo_path}"
         
+        # Convert Markdown recommendation to HTML if present
+        recommendation_html = None
+        if recommendation:
+            import markdown
+            recommendation_html = markdown.markdown(recommendation)
+
         # Render HTML
         html_content = template.render(
             config=config_data,
             logo_path=logo_url,
-            recommendation=recommendation,
+            recommendation=recommendation_html,
             generation_time=datetime.now()
         )
         

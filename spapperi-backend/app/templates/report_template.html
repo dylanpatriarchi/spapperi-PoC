@@ -4,18 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <title>Report Configurazione Spapperi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         @page {
             size: A4;
-            margin: 2cm;
+            margin: 1.5cm 2cm;
+
+            @bottom-center {
+                content: "Page " counter(page);
+                font-family: 'Inter', sans-serif;
+                font-size: 10px;
+                color: #888;
+            }
         }
 
         body {
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-family: 'Inter', sans-serif;
             color: #1a1a1a;
             line-height: 1.5;
             margin: 0;
             padding: 0;
+            background-color: #fff;
         }
 
         .header {
@@ -23,38 +34,58 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 2px solid #d20a10;
-            padding-bottom: 20px;
+            padding-bottom: 15px;
             margin-bottom: 30px;
         }
 
         .logo {
-            width: 150px;
+            width: 160px;
+            display: block;
         }
 
         .title {
-            font-size: 24px;
-            font-weight: bold;
-            color: #d20a10;
+            font-size: 14px;
+            font-weight: 600;
+            color: #444;
             text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: right;
+        }
+
+        .main-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 30px;
         }
 
         .section {
-            margin-bottom: 25px;
+            margin-bottom: 30px;
+            page-break-inside: avoid;
         }
 
         .section-title {
-            font-size: 18px;
-            font-weight: bold;
+            font-size: 12px;
+            font-weight: 700;
             color: #d20a10;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 5px;
-            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
         }
 
         .grid {
             display: table;
             width: 100%;
-            margin-bottom: 10px;
         }
 
         .row {
@@ -63,17 +94,56 @@
 
         .label {
             display: table-cell;
-            font-weight: bold;
-            width: 40%;
-            padding: 5px 0;
-            color: #555;
+            font-weight: 600;
+            width: 35%;
+            padding: 6px 0;
+            color: #444;
+            font-size: 13px;
+            vertical-align: top;
         }
 
         .value {
             display: table-cell;
-            width: 60%;
-            padding: 5px 0;
-            font-weight: normal;
+            width: 65%;
+            padding: 6px 0;
+            font-weight: 400;
+            font-size: 14px;
+            color: #111;
+        }
+
+        /* Recommendation Box */
+        .recommendation-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #d20a10;
+            padding: 20px;
+            margin-top: 10px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .recommendation-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .recommendation-content h3 {
+            font-size: 16px;
+            color: #1a1a1a;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .recommendation-content strong {
+            color: #d20a10;
+        }
+
+        .recommendation-content ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .recommendation-content li {
+            margin-bottom: 5px;
         }
 
         .footer {
@@ -82,16 +152,20 @@
             left: 0;
             right: 0;
             text-align: center;
-            font-size: 12px;
-            color: #777;
-            border-top: 1px solid #ddd;
-            padding-top: 10px;
+            font-size: 10px;
+            color: #999;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
         }
 
-        /* Specific styles for lists in values */
-        ul {
+        ul.simple-list {
             margin: 0;
-            padding-left: 20px;
+            padding-left: 15px;
+            list-style-type: square;
+        }
+
+        ul.simple-list li {
+            margin-bottom: 2px;
         }
     </style>
 </head>
@@ -99,25 +173,25 @@
 <body>
     <div class="header">
         <div class="logo-container">
-            <!-- Logo placeholder - will be replaced by actual image path during generation -->
             <img src="{{ logo_path }}" alt="Spapperi Logo" class="logo">
         </div>
-        <div class="title">Configurazione Trapiantatrice</div>
+        <div class="title">Configurazione Tecnica</div>
     </div>
 
+    <div class="main-title">Report Configurazione</div>
+    <div class="subtitle">Generato il {{ generation_time.strftime('%d/%m/%Y alle %H:%M') }} | ID: <span
+            style="font-family: monospace; color: #555;">{{ config.id }}</span></div>
+
+    {% if recommendation %}
     <div class="section">
-        <div class="section-title">Informazioni Generali</div>
-        <div class="grid">
-            <div class="row">
-                <div class="label">ID Configurazione</div>
-                <div class="value">{{ config.id }}</div>
-            </div>
-            <div class="row">
-                <div class="label">Data</div>
-                <div class="value">{{ config.created_at.strftime('%d/%m/%Y %H:%M') }}</div>
+        <div class="section-title">Consiglio dell'Esperto (AI)</div>
+        <div class="recommendation-box">
+            <div class="recommendation-content">
+                {{ recommendation | safe }}
             </div>
         </div>
     </div>
+    {% endif %}
 
     <div class="section">
         <div class="section-title">Dettagli Coltura</div>
@@ -135,7 +209,7 @@
                 <div class="label">Dimensioni Radice</div>
                 <div class="value">
                     {% for key, val in config.root_dimensions.items() %}
-                    {{ key }}: {{ val }} cm{% if not loop.last %}, {% endif %}
+                    {{ key }}: <strong>{{ val }} cm</strong>{% if not loop.last %}, {% endif %}
                     {% endfor %}
                 </div>
             </div>
@@ -159,31 +233,28 @@
                 <div class="label">Dettagli Sesto</div>
                 <div class="value">
                     {% if config.layout_details.number_of_rows %}
-                    Num. File: {{ config.layout_details.number_of_rows }}<br>
+                    Num. File: <strong>{{ config.layout_details.number_of_rows }}</strong><br>
                     {% endif %}
-                    Interfila (IF): {{ config.layout_details.IF }} cm<br>
-                    Interpianta (IP): {{ config.layout_details.IP }} cm
+                    IF: <strong>{{ config.layout_details.IF }} cm</strong> | IP: <strong>{{ config.layout_details.IP
+                        }} cm</strong>
                     {% if config.layout_details.IB %}
-                    <br>Interbina (IB): {{ config.layout_details.IB }} cm
+                    | IB: <strong>{{ config.layout_details.IB }} cm</strong>
                     {% endif %}
                 </div>
             </div>
             {% endif %}
 
-            {% if config.is_raised_bed %}
             <div class="row">
                 <div class="label">Baulatura</div>
                 <div class="value">
+                    {% if config.is_raised_bed %}
                     Sì (AT: {{ config.raised_bed_details.AT }}, LT: {{ config.raised_bed_details.LT }}, IT: {{
                     config.raised_bed_details.IT }}, ST: {{ config.raised_bed_details.ST }})
+                    {% else %}
+                    No
+                    {% endif %}
                 </div>
             </div>
-            {% else %}
-            <div class="row">
-                <div class="label">Baulatura</div>
-                <div class="value">No</div>
-            </div>
-            {% endif %}
 
             <div class="row">
                 <div class="label">Pacciamatura</div>
@@ -208,21 +279,21 @@
             {% if config.wheel_distance_internal %}
             <div class="row">
                 <div class="label">Carreggiata</div>
-                <div class="value">Int: {{ config.wheel_distance_internal }} cm / Est: {{ config.wheel_distance_external
-                    }} cm</div>
+                <div class="value">Int: {{ config.wheel_distance_internal }} cm / Est: {{
+                    config.wheel_distance_external }} cm</div>
             </div>
             {% endif %}
         </div>
     </div>
 
     <div class="section">
-        <div class="section-title">Accessori Selezionati</div>
+        <div class="section-title">Accessori</div>
         <div class="grid">
             {% if config.accessories_primary and config.accessories_primary|length > 0 %}
             <div class="row">
                 <div class="label">Primari (Telaio)</div>
                 <div class="value">
-                    <ul>
+                    <ul class="simple-list">
                         {% for acc in config.accessories_primary %}
                         {% if acc != "Nessuno" %}
                         <li>{{ acc }}</li>
@@ -237,7 +308,7 @@
             <div class="row">
                 <div class="label">Secondari (Telaio)</div>
                 <div class="value">
-                    <ul>
+                    <ul class="simple-list">
                         {% for acc in config.accessories_secondary %}
                         {% if acc != "Nessuno" %}
                         <li>{{ acc }}</li>
@@ -252,7 +323,7 @@
             <div class="row">
                 <div class="label">Elemento</div>
                 <div class="value">
-                    <ul>
+                    <ul class="simple-list">
                         {% for acc in config.accessories_element %}
                         {% if acc != "Nessuno" %}
                         <li>{{ acc }}</li>
@@ -270,7 +341,7 @@
         <div class="section-title">Note Cliente</div>
         <div class="grid">
             <div class="row">
-                <div class="value">{{ config.user_notes }}</div>
+                <div class="value" style="font-style: italic; color: #555;">"{{ config.user_notes }}"</div>
             </div>
         </div>
     </div>
@@ -290,20 +361,9 @@
         </div>
     </div>
 
-    {% if recommendation %}
-    <div class="section">
-        <div class="section-title">Consiglio dell'Esperto (AI)</div>
-        <div class="grid">
-            <div class="row">
-                <div class="value" style="width: 100%; white-space: pre-wrap;">{{ recommendation }}</div>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
     <div class="footer">
-        <p>Spapperi S.r.l. - Via Delle Industrie, 12 - 06018 Città di Castello (PG) - Italy</p>
-        <p>Configurazione generata automaticamente da Spapperi AI Configurator</p>
+        <p><strong>Spapperi S.r.l.</strong> - Via Delle Industrie, 12 - 06018 Città di Castello (PG) - Italy</p>
+        <p>Tel: +39 075 855 0005 | info@spapperi.com | www.spapperi.com</p>
     </div>
 </body>
 

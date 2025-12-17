@@ -321,11 +321,15 @@ class PhaseManager:
             save_data["root_type"] = extracted_data.get("root_type") or extracted_data.get("raw")
         
         elif field == "root_dimensions":
+            current_dims = existing_data.get("root_dimensions") or {}
+            if not isinstance(current_dims, dict):
+                current_dims = {}
+                
             save_data["root_dimensions"] = {
-                "A": extracted_data.get("A"),
-                "B": extracted_data.get("B"),
-                "C": extracted_data.get("C"),
-                "D": extracted_data.get("D")
+                "A": extracted_data.get("A") or current_dims.get("A"),
+                "B": extracted_data.get("B") or current_dims.get("B"),
+                "C": extracted_data.get("C") or current_dims.get("C"),
+                "D": extracted_data.get("D") or current_dims.get("D")
             }
         
         elif field == "row_type":
@@ -355,19 +359,25 @@ class PhaseManager:
             is_raised = extracted_data.get("is_raised_bed", False)
             save_data["is_raised_bed"] = is_raised
             if is_raised:
+                current_rb = existing_data.get("raised_bed_details") or {}
+                if not isinstance(current_rb, dict):
+                    current_rb = {}
                 save_data["raised_bed_details"] = {
-                    "AT": extracted_data.get("AT"),
-                    "LT": extracted_data.get("LT"),
-                    "IT": extracted_data.get("IT"),
-                    "ST": extracted_data.get("ST")
+                    "AT": extracted_data.get("AT") or current_rb.get("AT"),
+                    "LT": extracted_data.get("LT") or current_rb.get("LT"),
+                    "IT": extracted_data.get("IT") or current_rb.get("IT"),
+                    "ST": extracted_data.get("ST") or current_rb.get("ST")
                 }
         
         elif field == "is_mulch":
             is_mulch = extracted_data.get("is_mulch", False)
             save_data["is_mulch"] = is_mulch
             if is_mulch:
+                current_mulch = existing_data.get("mulch_details") or {}
+                if not isinstance(current_mulch, dict):
+                    current_mulch = {}
                 save_data["mulch_details"] = {
-                    "LP": extracted_data.get("LP")
+                    "LP": extracted_data.get("LP") or current_mulch.get("LP")
                 }
         
         elif field == "soil_type":
