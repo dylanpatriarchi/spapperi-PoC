@@ -14,7 +14,7 @@ from app.services.rag_service import rag_service
 from app.services.pdf_service import generate_report
 from app.utils.export import export_service
 from app.services.openai_validator import ai_validator
-from app.services.pdf_service import generate_report
+from app.services.pdf_service import generate_report, generate_commercial_proposal
 
 
 @asynccontextmanager
@@ -182,6 +182,40 @@ async def chat(request: ChatRequest):
                 role="assistant",
                 content=response_text
             )
+
+            # Add email sending logic when conversation is complete and contact email is provided
+            if config_data.get("contact_email") and config_data["contact_email"] != "No":
+                try:
+                    # 3. Generate Commercial Proposal
+                    commercial_pdf = generate_commercial_proposal(config_data)
+
+                    if commercial_pdf:
+                         # 4. Send Email
+                         from app.services.email_service import email_service
+                         email_subject = f"Preventivo Spapperi - Configurazione {config_data.get('id').hex[:8]}"
+                         email_body = f"""
+Gentile Cliente,
+
+Grazie per aver utilizzato il configuratore Spapperi.
+In allegato trova il preventivo commerciale relativo alla configurazione tecnica discussa.
+
+Riepilogo:
+- Coltura: {config_data.get('crop_type')}
+- Modello: TC12AM
+
+Restiamo a disposizione per qualsiasi chiarimento.
+
+Cordiali Saluti,
+Spapperi S.r.l.
+"""
+                         await email_service.send_email_with_attachments(
+                             to_email=config_data["contact_email"],
+                             subject=email_subject,
+                             body=email_body,
+                             attachment_paths=[commercial_pdf, pdf_path] # Added technical_pdf path here
+                         )
+                except Exception as email_err:
+                    print(f"Error executing email workflow: {email_err}")
             
             return ChatResponse(
                 response=response_text,
