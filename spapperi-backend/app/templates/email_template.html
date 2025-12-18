@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preventivo Spapperi</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f4f4f5;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .header {
+            background-color: #1a1a1a;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .header-bar {
+            height: 4px;
+            background-color: #d20a10;
+            width: 100%;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .greeting {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #111;
+        }
+
+        .feature-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #d20a10;
+            padding: 20px;
+            margin: 25px 0;
+        }
+
+        .feature-title {
+            font-weight: bold;
+            color: #d20a10;
+            text-transform: uppercase;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .feature-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+
+        .button {
+            display: inline-block;
+            background-color: #d20a10;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .footer {
+            background-color: #f4f4f5;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+            border-top: 1px solid #eee;
+        }
+
+        .checklist {
+            margin: 20px 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .checklist li {
+            padding-left: 20px;
+            position: relative;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .checklist li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #d20a10;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Spapperi</h1>
+        </div>
+        <div class="header-bar"></div>
+
+        <div class="content">
+            <p class="greeting">Gentile Cliente,</p>
+
+            <p>Grazie per aver scelto il configuratore intelligente Spapperi. In data odierna abbiamo elaborato la tua
+                richiesta di configurazione.</p>
+
+            <div class="feature-box">
+                <div class="feature-title">Riepilogo Configurazione</div>
+                <div class="feature-value">Modello TC12AM &mdash; {{ crop_type }}</div>
+            </div>
+
+            <p>In allegato a questa email troverai:</p>
+            <ul class="checklist">
+                <li><strong>Report Tecnico (PDF)</strong>: Dettagli completi della tua configurazione, sesto d'impianto
+                    e accessori.</li>
+                <li><strong>Preventivo Commerciale (PDF)</strong>: Offerta economica dettagliata valida per 30 giorni.
+                </li>
+            </ul>
+
+            <p>Il nostro team tecnico rimane a tua completa disposizione per approfondire la soluzione proposta.</p>
+
+            <p style="margin-top: 30px;">
+                Cordiali Saluti,<br>
+                <strong>Spapperi Team</strong>
+            </p>
+        </div>
+
+        <div class="footer">
+            &copy; 2025 Spapperi S.r.l. - Via Delle Industrie, 12 - Città di Castello (PG)<br>
+            <a href="https://www.spapperi.com" style="color: #666; text-decoration: underline;">www.spapperi.com</a>
+        </div>
+    </div>
+</body>
+
+</html>

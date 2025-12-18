@@ -192,27 +192,23 @@ async def chat(request: ChatRequest):
                     if commercial_pdf:
                          # 4. Send Email
                          from app.services.email_service import email_service
+                         from jinja2 import Environment, FileSystemLoader
+                         
+                         # Prepare email template
                          email_subject = f"Preventivo Spapperi - Configurazione {config_data.get('id').hex[:8]}"
-                         email_body = f"""
-Gentile Cliente,
-
-Grazie per aver utilizzato il configuratore Spapperi.
-In allegato trova il preventivo commerciale relativo alla configurazione tecnica discussa.
-
-Riepilogo:
-- Coltura: {config_data.get('crop_type')}
-- Modello: TC12AM
-
-Restiamo a disposizione per qualsiasi chiarimento.
-
-Cordiali Saluti,
-Spapperi S.r.l.
-"""
+                         
+                         template_env = Environment(loader=FileSystemLoader("/app/app/templates"))
+                         email_template = template_env.get_template("email_template.html")
+                         
+                         email_body = email_template.render(
+                             crop_type=config_data.get('crop_type', 'N/D')
+                         )
+                         
                          await email_service.send_email_with_attachments(
                              to_email=config_data["contact_email"],
                              subject=email_subject,
                              body=email_body,
-                             attachment_paths=[commercial_pdf, pdf_path] # Added technical_pdf path here
+                             attachment_paths=[commercial_pdf, pdf_path] 
                          )
                 except Exception as email_err:
                     print(f"Error executing email workflow: {email_err}")

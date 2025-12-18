@@ -31,7 +31,9 @@ class EmailService:
         message["From"] = self.sender_email
         message["To"] = to_email
         message["Subject"] = subject
-        message.set_content(body)
+        
+        # Set HTML content
+        message.set_content(body, subtype="html")
 
         # Add attachments
         for path in attachment_paths:
