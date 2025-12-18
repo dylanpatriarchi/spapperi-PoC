@@ -271,7 +271,7 @@ export default function ConfiguratorPage() {
                                     <Robot size={32} weight="duotone" className="text-spapperi-red" />
                                 </div>
                                 <h1 className="text-5xl md:text-7xl font-heading font-bold tracking-tighter leading-[0.9] mb-8">
-                                    Spapperi<br /><span className="text-spapperi-red">AI Logic.</span>
+                                    Spapperi<br /><span className="text-spapperi-red">AI.</span>
                                 </h1>
                                 <p className="text-xl text-spapperi-black font-light leading-relaxed max-w-lg text-justify md:text-left">
                                     Configura la tua macchina ideale dialogando con la nostra Intelligenza Artificiale.

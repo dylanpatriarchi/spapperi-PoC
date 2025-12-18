@@ -44,8 +44,9 @@ RUN apt-get update && \
     libharfbuzz-subset0 \
     libjpeg62-turbo \
     libopenjp2-7 \
-    libxcb1 && \
-    rm -rf /var/lib/apt/lists/*
+    libxcb1 \
+    librsvg2-bin \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy wheels from builder
 COPY --from=builder /app/wheels /wheels

@@ -87,6 +87,20 @@ class RagService:
         if config_data.get("is_mulch"):
              query_parts.append("Su pacciamatura")
         
+        # Add accessories to query parts for context
+        accessories = []
+        if config_data.get("accessories_primary"):
+             accessories.extend(config_data["accessories_primary"])
+        if config_data.get("accessories_secondary"):
+             accessories.extend(config_data["accessories_secondary"])
+        if config_data.get("accessories_element"):
+             accessories.extend(config_data["accessories_element"])
+        
+        if accessories:
+            acc_str = ", ".join([a for a in accessories if a != "Nessuno"])
+            if acc_str:
+                query_parts.append(f"Accessori: {acc_str}")
+
         query_str = " ".join(query_parts)
         print(f"DEBUG RAG Query: {query_str}")
 
@@ -104,25 +118,33 @@ class RagService:
 
         system_prompt = """
         Sei un esperto agronomo e tecnico commerciale Spapperi.
-        Il tuo compito è analizzare la richiesta del cliente e i prodotti trovati nel catalogo (context).
-        DEVI consigliare il modello di trapiantatrice più adatto basandoti SUI DATI FORNITI.
+        Il tuo compito è generare una configurazione tecnica dettagliata per il modello TC12AM (o il modello più idoneo trovato).
+
+        Nel report finale, scrivi una sezione intitolata "Consiglio dell'Esperto" seguendo QUESTA STRUTTURA:
         
-        Nel report finale, scrivi una sezione intitolata "Consiglio dell'Esperto".
-        - Cita esplicitamente il nome del modello consigliato.
-        - Spiega PERCHÉ è adatto (es: "Ideale per baulatura", "Perfetto per zolla cubica").
-        - Se ci sono alternative valide, menzionale brevemente.
-        - Sii professionale, convincente e tecnico ma chiaro.
-        - Non inventare caratteristiche non presenti nel contesto.
+        1. **Modello Identificato**: Conferma il modello (es. TC12AM) e spiega brevemente perché è adatto alla coltura/sesto indicati.
+        2. **Configurazione Componenti**: ELENCA e SPIEGA i componenti/accessori selezionati dal cliente.
+           - Per ogni accessorio (es. Spandiconcime, Microgranulatore, Ruote), spiega il suo ruolo tecnico nella configurazione specifica.
+           - Esempio: "L'uso dello spandiconcime è essenziale per la coltura X su baula..."
+        3. **Conclusione**: Un breve commento sulla qualità della configurazione.
+
+        IMPORTANTE:
+        - Non limitarti a elencare, SPIEGA IL PERCHÉ dei componenti in relazione al modello TC12AM.
+        - Usa un tono professionale, "industrial" e tecnico.
+        - Se mancano accessori critici, suggeriscili.
         """
 
         user_prompt = f"""
-        CONFIGURAZIONE CLIENTE:
+        DATI CONFIGURAZIONE CLIENTE:
         {query_str}
 
-        PRODOTTI TROVATI NEL CATALOGO:
+        TOKEN ACCESSORI SELEZIONATI:
+        {acc_str if accessories else "Nessun accessorio selezionato"}
+
+        PRODOTTI CATALOGO TROVATI:
         {context_text}
 
-        Genera la raccomandazione tecnica.
+        Genera la descrizione tecnica della configurazione.
         """
 
         response = await client.chat.completions.create(
