@@ -35,21 +35,46 @@ class EmailService:
         # Set HTML content
         message.set_content(body, subtype="html")
 
-        # Add attachments
-        for path in attachment_paths:
-            if os.path.exists(path):
-                filename = os.path.basename(path)
-                # Guess mime type or just application/pdf
-                with open(path, "rb") as f:
-                    file_data = f.read()
-                    message.add_attachment(
-                        file_data,
-                        maintype="application",
-                        subtype="pdf",
-                        filename=filename
-                    )
+        # Add Logo as CID inline image
+        try:
+            logo_path = "/app/source/logo_spapperi.svg" # Standard path in container
+            if os.path.exists(logo_path):
+                 print(f"DEBUG: Found logo at {logo_path}, attaching...")
+                 with open(logo_path, "rb") as img:
+                     logo_data = img.read()
+                     # SVG mime type
+                     message.add_attachment(
+                         logo_data,
+                         maintype="image",
+                         subtype="svg+xml",
+                         filename="logo_spapperi.svg",
+                         disposition="inline",
+                         headers={"Content-ID": "<logo>"}
+                     )
             else:
-                print(f"Warning: Attachment not found: {path}")
+                print(f"DEBUG: Logo not found at {logo_path}")
+        except Exception as logo_err:
+            print(f"DEBUG: Failed to attach logo: {logo_err}")
+
+        # Add PDF attachments
+        try:
+            for path in attachment_paths:
+                if os.path.exists(path):
+                    filename = os.path.basename(path)
+                    print(f"DEBUG: Attaching PDF {filename}...")
+                    # Guess mime type or just application/pdf
+                    with open(path, "rb") as f:
+                        file_data = f.read()
+                        message.add_attachment(
+                            file_data,
+                            maintype="application",
+                            subtype="pdf",
+                            filename=filename
+                        )
+                else:
+                    print(f"Warning: Attachment not found: {path}")
+        except Exception as attach_err:
+             print(f"DEBUG: Failed to attach PDF: {attach_err}")
 
         try:
             print(f"Connecting to {self.smtp_server}...")
@@ -63,6 +88,11 @@ class EmailService:
             )
             print(f"Email sent successfully to {to_email}")
             return True
+        except Exception as e:
+            print(f"Failed to send email inside aiosmtplib.send: {e}")
+            import traceback
+            traceback.print_exc()
+            return False
         except Exception as e:
             print(f"Failed to send email: {e}")
             return False

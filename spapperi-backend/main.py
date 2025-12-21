@@ -187,13 +187,16 @@ async def chat(request: ChatRequest):
             if config_data.get("contact_email") and config_data["contact_email"] != "No":
                 try:
                     # 3. Generate Commercial Proposal
+                    print("DEBUG: Generating Commercial Proposal...")
                     commercial_pdf = generate_commercial_proposal(config_data)
+                    print(f"DEBUG: Commercial PDF path: {commercial_pdf}")
 
                     if commercial_pdf:
                          # 4. Send Email
                          from app.services.email_service import email_service
                          from jinja2 import Environment, FileSystemLoader
                          
+                         print("DEBUG: Preparing Email Template...")
                          # Prepare email template
                          email_subject = f"Preventivo Spapperi - Configurazione {config_data.get('id').hex[:8]}"
                          
@@ -204,13 +207,23 @@ async def chat(request: ChatRequest):
                              crop_type=config_data.get('crop_type', 'N/D')
                          )
                          
-                         await email_service.send_email_with_attachments(
+                         print(f"DEBUG: Sending email to {config_data['contact_email']}...")
+                         result = await email_service.send_email_with_attachments(
                              to_email=config_data["contact_email"],
                              subject=email_subject,
                              body=email_body,
                              attachment_paths=[commercial_pdf, pdf_path] 
                          )
+                         print(f"DEBUG: Email send result: {result}")
+                    else:
+                        print("DEBUG: Skipped email because commercial_pdf is None")
                 except Exception as email_err:
+                    import traceback
+                    traceback.print_exc()
+                    print(f"Error executing email workflow: {email_err}")
+                except Exception as email_err:
+                    import traceback
+                    traceback.print_exc()
                     print(f"Error executing email workflow: {email_err}")
             
             return ChatResponse(
