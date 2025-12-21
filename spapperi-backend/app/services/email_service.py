@@ -35,7 +35,7 @@ class EmailService:
         message.set_content(body, subtype="html")
 
         # Add Logo as CID inline image
-        logo_path = "/app/source/logo_spapperi.svg"
+        logo_path = "/app/source/logo_spapperi.png"
         print(f"DEBUG EMAIL: Checking logo at {logo_path}, exists: {os.path.exists(logo_path)}")
         if os.path.exists(logo_path):
              with open(logo_path, "rb") as img:
@@ -45,8 +45,8 @@ class EmailService:
                  message.add_related(
                      logo_data,
                      maintype="image",
-                     subtype="svg+xml",
-                     filename="logo_spapperi.svg",
+                     subtype="png",
+                     filename="logo_spapperi.png",
                      cid="logo"
                  )
                  print("DEBUG EMAIL: Logo attached successfully")
