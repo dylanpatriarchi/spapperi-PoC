@@ -28,8 +28,11 @@ services:
     environment:
       - DATABASE_URL=postgresql://postgres:password@db:5432/spapperi
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - ZOHO_PW=${ZOHO_PW}
-      - ZOHO_USER=${ZOHO_USER}
+      - EMAIL_HOST=${EMAIL_HOST:-smtp.zoho.eu}
+      - EMAIL_PORT=${EMAIL_PORT:-465}
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_PASSWORD=${ZOHO_PW}
+      - EMAIL_FROM=${EMAIL_USER}
     networks:
       - spapperi-network
     depends_on:
