@@ -7,61 +7,65 @@
     <style>
         @page {
             size: A4;
-            margin: 0;
-            padding: 0;
+            margin: 2cm;
 
             @bottom-center {
-                content: "";
+                content: "Spapperi NT S.r.l. - Privileged & Confidential";
+                font-family: 'Helvetica Now', 'Inter', sans-serif;
+                font-size: 8pt;
+                color: #999;
             }
         }
 
         @font-face {
             font-family: 'Inter';
-            src: url('https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hjp-Ek-_EeA.woff') format('woff');
+            src: local('Inter Regular'), local('Inter-Regular');
             font-weight: 400;
         }
 
         @font-face {
             font-family: 'Inter';
-            src: url('https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGkyAZ9hjp-Ek-_EeA.woff') format('woff');
+            src: local('Inter Bold'), local('Inter-Bold');
             font-weight: 700;
         }
 
         body {
             font-family: 'Helvetica Now', 'Inter', "Helvetica Neue", Helvetica, Arial, sans-serif;
-            color: #1a1a1a;
+            color: #000;
             line-height: 1.4;
             margin: 0;
-            padding: 2cm;
+            padding: 0;
             background-color: #fff;
+            font-size: 10pt;
         }
 
         .header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 2cm;
-            border-bottom: 2px solid #d20a10;
+            margin-bottom: 40px;
+            border-bottom: 1px solid #000;
             padding-bottom: 20px;
         }
 
         .logo {
-            width: 180px;
+            width: 150px;
         }
 
         .company-details {
             text-align: right;
-            font-size: 11px;
-            color: #555;
-            line-height: 1.5;
+            font-size: 9pt;
+            color: #666;
+            line-height: 1.4;
         }
 
         .document-title {
-            font-size: 24px;
+            font-size: 24pt;
             font-weight: 700;
-            color: #1a1a1a;
-            margin-bottom: 10px;
+            color: #000;
+            margin-bottom: 30px;
             text-transform: uppercase;
+            letter-spacing: -0.5px;
         }
 
         .document-meta {
@@ -71,19 +75,21 @@
         }
 
         .meta-group {
-            width: 45%;
+            width: 48%;
         }
 
         .meta-label {
-            font-size: 11px;
+            font-size: 9pt;
             text-transform: uppercase;
             color: #888;
             font-weight: 600;
             margin-bottom: 5px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 2px;
         }
 
         .meta-value {
-            font-size: 14px;
+            font-size: 10pt;
             font-weight: 400;
             color: #000;
         }
@@ -97,77 +103,74 @@
 
         .pricing-table th {
             text-align: left;
-            padding: 10px;
-            border-bottom: 2px solid #eee;
-            font-size: 12px;
+            padding: 8px 0;
+            border-bottom: 2px solid #d20a10;
+            font-size: 9pt;
             text-transform: uppercase;
             color: #d20a10;
             font-weight: 700;
         }
 
         .pricing-table td {
-            padding: 12px 10px;
-            border-bottom: 1px solid #fafafa;
-            font-size: 14px;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 10pt;
+            vertical-align: top;
         }
 
         .pricing-table td.price {
             text-align: right;
             font-family: monospace;
-            font-size: 14px;
+            font-size: 10pt;
         }
 
         .total-row td {
-            border-top: 2px solid #1a1a1a;
+            border-top: 2px solid #000;
             border-bottom: none;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 12pt;
             padding-top: 15px;
         }
 
         /* Technical Summary Section */
         .tech-summary {
-            background-color: #f8f9fa;
-            border-left: 4px solid #aaa;
-            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #eee;
+            padding: 15px;
             margin-bottom: 40px;
         }
 
         .tech-header {
-            font-size: 14px;
+            font-size: 9pt;
             font-weight: 700;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             text-transform: uppercase;
-            color: #444;
+            color: #000;
         }
 
         .tech-content {
-            font-size: 12px;
-            line-height: 1.6;
+            font-size: 9pt;
             color: #555;
         }
 
         .tech-content ul {
-            padding-left: 20px;
-            margin: 0;
+            padding-left: 15px;
+            margin: 5px 0;
         }
 
         .terms {
-            font-size: 10px;
-            color: #777;
+            font-size: 8pt;
+            color: #888;
             border-top: 1px solid #eee;
             padding-top: 20px;
-            line-height: 1.5;
+            line-height: 1.4;
             text-align: justify;
         }
 
         .footer {
-            position: fixed;
-            bottom: 1cm;
-            left: 2cm;
-            right: 2cm;
+            margin-top: 50px;
             text-align: center;
-            font-size: 10px;
+            font-size: 8pt;
             color: #999;
         }
     </style>
@@ -180,8 +183,7 @@
             <strong>Spapperi NT S.r.l.</strong><br>
             Via Delle Industrie, 12<br>
             06018 Città di Castello (PG) - Italy<br>
-            P.IVA: IT00000000000<br>
-            Tel: +39 075 855 0005
+            P.IVA: IT00000000000
         </div>
     </div>
 
@@ -189,22 +191,21 @@
 
     <div class="document-meta">
         <div class="meta-group">
-            <div class="meta-label">Spettabile Cliente</div>
+            <div class="meta-label">Cliente</div>
             <div class="meta-value">
                 {% if config.contact_email %}
-                Email: {{ config.contact_email }}<br>
+                {{ config.contact_email }}<br>
                 {% endif %}
                 {% if config.vat_number %}
-                P.IVA/CF: {{ config.vat_number }}
+                P.IVA/CF: <strong>{{ config.vat_number }}</strong>
                 {% endif %}
             </div>
         </div>
         <div class="meta-group">
-            <div class="meta-label">Dettagli Documento</div>
+            <div class="meta-label">Riferimenti</div>
             <div class="meta-value">
-                Numero: PREV-{{ config.id.hex[:6].upper() }}<br>
                 Data: {{ generation_time.strftime('%d/%m/%Y') }}<br>
-                Validità: 30 giorni
+                Validità: 30 gg
             </div>
         </div>
     </div>
@@ -213,16 +214,16 @@
         <thead>
             <tr>
                 <th style="width: 50%;">Descrizione</th>
-                <th style="width: 15%;">Qtà</th>
-                <th style="width: 15%;">Prezzo Unit.</th>
+                <th style="width: 10%;">Qtà</th>
+                <th style="width: 20%; text-align: right;">Unitario</th>
                 <th style="width: 20%; text-align: right;">Totale</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>
-                    <strong>Trapiantatrice Modello TC12AM</strong><br>
-                    <span style="font-size: 12px; color: #666;">Configurazione base per {{ config.crop_type }} su {{
+                    <strong>Trapiantatrice TC12AM</strong><br>
+                    <span style="font-size: 9pt; color: #666;">Configurazione {{ config.crop_type }} / {{
                         config.row_type }}</span>
                 </td>
                 <td>1</td>
@@ -232,10 +233,7 @@
 
             {% for item in pricing_items %}
             <tr>
-                <td>
-                    {{ item.name }}<br>
-                    <span style="font-size: 11px; color: #888;">Accessorio opzionale</span>
-                </td>
+                <td>{{ item.name }}</td>
                 <td>1</td>
                 <td class="price">€ {{ item.price }}</td>
                 <td class="price">€ {{ item.price }}</td>
@@ -247,9 +245,9 @@
                 <td class="price">€ {{ total_price }}</td>
             </tr>
             <tr>
-                <td colspan="3" style="text-align: right; padding-right: 20px; font-size: 12px; color: #666;">IVA (22%)
+                <td colspan="3" style="text-align: right; padding-right: 20px; font-size: 10pt; color: #666;">IVA (22%)
                 </td>
-                <td class="price" style="font-size: 12px; color: #666;">€ {{ vat_amount }}</td>
+                <td class="price" style="font-size: 10pt; color: #666;">€ {{ vat_amount }}</td>
             </tr>
             <tr>
                 <td colspan="3" style="text-align: right; padding-right: 20px; font-weight: 700; color: #d20a10;">TOTALE
@@ -260,13 +258,13 @@
     </table>
 
     <div class="tech-summary">
-        <div class="tech-header">Riepilogo Configurazione Tecnica</div>
+        <div class="tech-header">Specifica Fornitura</div>
         <div class="tech-content">
-            <strong>Coltura:</strong> {{ config.crop_type }}<br>
-            <strong>Sesto:</strong> {{ config.row_type }}<br>
+            <strong>Coltura:</strong> {{ config.crop_type }} | <strong>Sesto:</strong> {{ config.row_type }} |
             <strong>Terreno:</strong> {{ config.soil_type }}<br>
+
             {% if config.accessories_primary or config.accessories_secondary %}
-            <strong>Accessori Inclusi:</strong>
+            <div style="margin-top: 5px;"><strong>Accessori Inclusi:</strong></div>
             <ul>
                 {% for acc in config.accessories_primary %}{% if acc != "Nessuno" %}<li>{{ acc }}</li>{% endif %}{%
                 endfor %}
@@ -276,19 +274,15 @@
                 endfor %}
             </ul>
             {% endif %}
-            <br>
-            <em style="font-size: 11px;">Per i dettagli tecnici completi, fare riferimanto al Report Tecnico
-                allegato.</em>
         </div>
     </div>
 
     <div class="terms">
         <strong>Condizioni Generali di Vendita:</strong><br>
-        1. PREZZI: I prezzi si intendono franco nostro stabilimento, IVA esclusa.<br>
-        2. CONSEGNA: Da concordare al momento dell'ordine (indicativamente 45-60 giorni).<br>
-        3. PAGAMENTO: 30% all'ordine, saldo prima della spedizione.<br>
-        4. GARANZIA: 12 mesi per difetti di fabbricazione, parti elettriche escluse.<br>
-        5. VALIDITÀ: Il presente preventivo è valido per 30 giorni dalla data di emissione.
+        1. PREZZI: Franco nostro stabilimento, IVA esclusa.
+        2. CONSEGNA: Da concordare (45-60 gg).
+        3. PAGAMENTO: 30% all'ordine, saldo prima della spedizione.
+        4. GARANZIA: 12 mesi.
     </div>
 
     <div class="footer">

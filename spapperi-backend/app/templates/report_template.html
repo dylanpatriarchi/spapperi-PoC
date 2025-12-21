@@ -3,15 +3,17 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Report Configurazione Spapperi</title>
+    <title>Report Tecnico Spapperi</title>
     <style>
         @page {
             size: A4;
-            margin: 0;
-            padding: 0;
+            margin: 2cm;
 
             @bottom-center {
-                content: "";
+                content: "Spapperi NT S.r.l. - Privileged & Confidential";
+                font-family: 'Helvetica Now', 'Inter', sans-serif;
+                font-size: 8pt;
+                color: #999;
             }
         }
 
@@ -29,438 +31,249 @@
 
         body {
             font-family: 'Helvetica Now', 'Inter', "Helvetica Neue", Helvetica, Arial, sans-serif;
-            color: #1a1a1a;
-            line-height: 1.5;
+            color: #000;
+            line-height: 1.4;
             margin: 0;
             padding: 0;
             background-color: #fff;
+            font-size: 10pt;
         }
 
-        /* Cover Page */
-        .cover-page {
-            width: 100%;
-            height: 100vh;
-            position: relative;
-            background-color: #1a1a1a;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 2cm;
-            box-sizing: border-box;
-            page-break-after: always;
-        }
-
-        .cover-logo {
-            width: 250px;
-            margin-bottom: 2cm;
-            filter: brightness(0) invert(1);
-            /* Make logo white */
-        }
-
-        .cover-title {
-            font-size: 48px;
+        /* Type scale */
+        h1 {
+            font-size: 24pt;
             font-weight: 700;
+            margin: 0 0 20px 0;
+            letter-spacing: -0.5px;
             text-transform: uppercase;
-            letter-spacing: -1px;
-            line-height: 1.1;
-            margin-bottom: 20px;
-            border-left: 8px solid #d20a10;
-            padding-left: 20px;
         }
 
-        .cover-subtitle {
-            font-size: 18px;
-            color: #888;
-            margin-bottom: 4cm;
-            padding-left: 28px;
-            /* Align with title text */
-        }
-
-        .cover-footer {
-            position: absolute;
-            bottom: 2cm;
-            left: 2cm;
-            right: 2cm;
-            border-top: 1px solid #333;
-            padding-top: 20px;
-            display: flex;
-            justify-content: space-between;
-            color: #666;
-            font-size: 12px;
-        }
-
-        /* Content Pages */
-        .content-page {
-            padding: 2cm;
-            padding-top: 1.5cm;
-        }
-
-        .header {
+        h2 {
+            font-size: 14pt;
+            font-weight: 700;
+            margin: 30px 0 10px 0;
             border-bottom: 2px solid #d20a10;
-            padding-bottom: 15px;
-            margin-bottom: 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-        }
-
-        .header-logo {
-            width: 120px;
-        }
-
-        .header-meta {
-            text-align: right;
-            font-size: 10px;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .section {
-            margin-bottom: 35px;
-            page-break-inside: avoid;
-        }
-
-        .section-header {
-            font-size: 14px;
-            font-weight: 700;
+            padding-bottom: 5px;
             text-transform: uppercase;
             color: #d20a10;
-            letter-spacing: 1px;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 5px;
         }
 
-        /* Grid Layout for Data attributes */
-        .data-grid {
-            display: table;
+        h3 {
+            font-size: 11pt;
+            font-weight: 700;
+            margin: 15px 0 5px 0;
+            color: #000;
+        }
+
+        p {
+            margin: 0 0 10px 0;
+        }
+
+        /* Header */
+        .header {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 8px;
+            margin-bottom: 40px;
+            border-bottom: 1px solid #000;
+            padding-bottom: 20px;
         }
 
-        .data-row {
-            display: table-row;
+        .logo {
+            width: 150px;
+            display: block;
         }
 
-        .data-label {
-            display: table-cell;
-            width: 35%;
-            font-size: 12px;
-            font-weight: 600;
+        .doc-meta {
+            margin-top: 10px;
+            font-size: 9pt;
             color: #666;
+        }
+
+        /* Tables for Data */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 6px 0;
+            border-bottom: 1px solid #eee;
             vertical-align: top;
-            padding-right: 15px;
-            border-bottom: 1px solid #fafafa;
         }
 
-        .data-value {
-            display: table-cell;
-            width: 65%;
-            font-size: 14px;
-            font-weight: 400;
-            color: #111;
-            padding-bottom: 8px;
-            /* Match spacing */
-            border-bottom: 1px solid #fafafa;
-        }
-
-        .data-value strong {
+        th {
+            width: 35%;
             font-weight: 600;
+            color: #555;
+            font-size: 9pt;
         }
 
-        /* AI Recommendation Box */
-        .ai-box {
-            background-color: #f4f4f5;
-            border-left: 4px solid #d20a10;
-            padding: 25px;
+        td {
+            color: #000;
+            font-weight: 400;
+        }
+
+        td strong {
+            font-weight: 700;
+        }
+
+        /* AI Section (Clean) */
+        .ai-recommendation {
+            background-color: #fff;
+            border: 1px solid #eee;
+            padding: 15px;
             margin-bottom: 30px;
         }
 
-        .ai-label {
-            font-size: 12px;
+        .ai-title {
+            color: #d20a10;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #d20a10;
+            font-size: 9pt;
             margin-bottom: 10px;
             display: block;
         }
 
-        .ai-content {
-            font-size: 14px;
-            /* Reduced from 15px for better density */
-            line-height: 1.6;
-            color: #333;
-        }
-
-        .ai-content h1,
-        .ai-content h2,
-        .ai-content h3 {
-            font-size: 16px;
-            font-weight: 700;
-            color: #111;
-            margin-top: 15px;
-            margin-bottom: 8px;
-        }
-
-        .ai-content p {
-            margin-bottom: 12px;
-        }
-
-        .ai-content ul,
-        .ai-content ol {
-            margin: 15px 0;
-            padding-left: 25px;
-        }
-
-        .ai-content li {
-            margin-bottom: 8px;
-            padding-left: 5px;
-        }
-
-        .ai-content strong {
-            color: #d20a10;
-            /* Highlight key terms in red to break up text */
-            font-weight: 700;
-        }
-
-        .footer {
+        /* Footer */
+        .footer-info {
             margin-top: 50px;
+            font-size: 8pt;
             text-align: center;
-            font-size: 10px;
-            color: #999;
-            border-top: 1px solid #eee;
-            padding-top: 20px;
-        }
-
-        ul.simple-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        ul.simple-list li::before {
-            content: "•";
-            color: #d20a10;
-            font-weight: bold;
-            display: inline-block;
-            width: 1em;
-            margin-left: -1em;
-        }
-
-        ul.simple-list li {
-            padding-left: 1em;
-            margin-bottom: 4px;
-            font-size: 13px;
+            color: #888;
         }
     </style>
 </head>
 
 <body>
 
-    <!-- Cover Page -->
-    <div class="cover-page">
-        <img src="{{ logo_path }}" alt="Spapperi Logo" class="cover-logo">
-        <div class="cover-title">Report<br>Configurazione<br>Tecnica</div>
-        <div class="cover-subtitle">Generato automaticamente da Spapperi AI</div>
-
-        <div class="cover-footer">
-            <div>ID: {{ config.id }}</div>
-            <div>{{ generation_time.strftime('%d/%m/%Y') }}</div>
+    <div class="header">
+        <img src="{{ logo_path }}" alt="Spapperi" class="logo">
+        <div class="doc-meta">
+            <strong>CONFIGURAZIONE TECNICA E SPECIFICHE</strong><br>
+            Data: {{ generation_time.strftime('%d/%m/%Y') }}
         </div>
     </div>
 
-    <!-- Content Pages -->
-    <div class="content-page">
-        <div class="header">
-            <img src="{{ logo_path }}" alt="Spapperi" class="header-logo">
-            <div class="header-meta">
-                ID Configurazione: <strong>{{ config.id.hex[:8] }}</strong><br>
-                Data: {{ generation_time.strftime('%d/%m/%Y %H:%M') }}
-            </div>
-        </div>
+    <h1>TC12AM Multing</h1>
+    <p>Riepilogo delle specifiche tecniche definite in fase di configurazione.</p>
 
-        {% if recommendation %}
-        <div class="ai-box">
-            <span class="ai-label">Consiglio dell'Esperto AI</span>
-            <div class="ai-content">
-                {{ recommendation | safe }}
-            </div>
-        </div>
-        {% endif %}
-
-        <div class="section">
-            <div class="section-header">SPECIFICHE COLTURALI</div>
-            <div class="data-grid">
-                <div class="data-row">
-                    <div class="data-label">Coltura</div>
-                    <div class="data-value">{{ config.crop_type }}</div>
-                </div>
-                <div class="data-row">
-                    <div class="data-label">Tipologia Radice</div>
-                    <div class="data-value">{{ config.root_type }}</div>
-                </div>
-                {% if config.root_dimensions %}
-                <div class="data-row">
-                    <div class="data-label">Dimensioni Radice</div>
-                    <div class="data-value">
-                        {% for key, val in config.root_dimensions.items() %}
-                        {{ key }}: <strong>{{ val }} cm</strong>{% if not loop.last %} &nbsp;|&nbsp; {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-header">TERRENO E SESTO D'IMPIANTO</div>
-            <div class="data-grid">
-                <div class="data-row">
-                    <div class="data-label">Tipologia Terreno</div>
-                    <div class="data-value">{{ config.soil_type }}</div>
-                </div>
-                <div class="data-row">
-                    <div class="data-label">Configurazione File</div>
-                    <div class="data-value">{{ config.row_type }}</div>
-                </div>
-                {% if config.layout_details %}
-                <div class="data-row">
-                    <div class="data-label">Dettagli Sesto</div>
-                    <div class="data-value">
-                        {% if config.layout_details.number_of_rows %}
-                        File: <strong>{{ config.layout_details.number_of_rows }}</strong><br>
-                        {% endif %}
-                        IF (Interfila): <strong>{{ config.layout_details.IF }} cm</strong><br>
-                        IP (Interpianta): <strong>{{ config.layout_details.IP }} cm</strong>
-                        {% if config.layout_details.IB %}
-                        <br>IB (Interbina): <strong>{{ config.layout_details.IB }} cm</strong>
-                        {% endif %}
-                    </div>
-                </div>
-                {% endif %}
-
-                <div class="data-row">
-                    <div class="data-label">Baulatura</div>
-                    <div class="data-value">
-                        {% if config.is_raised_bed %}
-                        <strong>Sì</strong><br>
-                        <span style="font-size:12px; color:#666;">
-                            AT: {{ config.raised_bed_details.AT }} | LT: {{ config.raised_bed_details.LT }} | IT: {{
-                            config.raised_bed_details.IT }} | ST: {{ config.raised_bed_details.ST }}
-                        </span>
-                        {% else %}
-                        No
-                        {% endif %}
-                    </div>
-                </div>
-
-                <div class="data-row">
-                    <div class="data-label">Pacciamatura</div>
-                    <div class="data-value">
-                        {% if config.is_mulch %}
-                        <strong>Sì</strong> (Telo: {{ config.mulch_details.LP }} cm)
-                        {% else %}
-                        No
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-header">MACCHINA E ACCESSORI</div>
-            <div class="data-grid">
-                <div class="data-row">
-                    <div class="data-label">Trattore</div>
-                    <div class="data-value">
-                        Potenza: <strong>{{ config.tractor_hp }} HP</strong>
-                        {% if config.wheel_distance_internal %}
-                        <br>Carreggiata (Int/Est): {{ config.wheel_distance_internal }} / {{
-                        config.wheel_distance_external }} cm
-                        {% endif %}
-                    </div>
-                </div>
-
-                {% if config.accessories_primary and config.accessories_primary|length > 0 %}
-                <div class="data-row">
-                    <div class="data-label">Accessori Primari</div>
-                    <div class="data-value">
-                        <ul class="simple-list">
-                            {% for acc in config.accessories_primary %}
-                            {% if acc != "Nessuno" %}
-                            <li>{{ acc }}</li>
-                            {% endif %}
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-                {% endif %}
-
-                {% if config.accessories_secondary and config.accessories_secondary|length > 0 %}
-                <div class="data-row">
-                    <div class="data-label">Accessori Secondari</div>
-                    <div class="data-value">
-                        <ul class="simple-list">
-                            {% for acc in config.accessories_secondary %}
-                            {% if acc != "Nessuno" %}
-                            <li>{{ acc }}</li>
-                            {% endif %}
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-                {% endif %}
-
-                {% if config.accessories_element and config.accessories_element|length > 0 %}
-                <div class="data-row">
-                    <div class="data-label">Accessori Elemento</div>
-                    <div class="data-value">
-                        <ul class="simple-list">
-                            {% for acc in config.accessories_element %}
-                            {% if acc != "Nessuno" %}
-                            <li>{{ acc }}</li>
-                            {% endif %}
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-
-        {% if config.user_notes and config.user_notes != 'No' %}
-        <div class="section">
-            <div class="section-header">NOTE AGGIUNTIVE</div>
-            <div
-                style="background: #fff; border: 1px solid #eee; padding: 15px; font-style: italic; color: #555; font-size: 13px;">
-                "{{ config.user_notes }}"
-            </div>
-        </div>
-        {% endif %}
-
-        <div class="section">
-            <div class="section-header">CLIENTE</div>
-            <div class="data-grid">
-                <div class="data-row">
-                    <div class="data-label">Email</div>
-                    <div class="data-value">{{ config.contact_email }}</div>
-                </div>
-                <div class="data-row">
-                    <div class="data-label">P.IVA / Fiscale</div>
-                    <div class="data-value">{{ config.vat_number }}</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="footer">
-            <p><strong>Spapperi NT S.r.l.</strong> - Via Delle Industrie, 12 - 06018 Città di Castello (PG) - Italy</p>
-            <p>www.spapperi.com | info@spapperi.com | +39 075 855 0005</p>
+    {% if recommendation %}
+    <div class="ai-recommendation">
+        <span class="ai-title">NOTA TECNICA (AI)</span>
+        <div style="font-size: 9pt; color: #333;">
+            {{ recommendation | safe }}
         </div>
     </div>
+    {% endif %}
+
+    <h2>Dati Colturali</h2>
+    <table>
+        <tr>
+            <th>Coltura</th>
+            <td>{{ config.crop_type }}</td>
+        </tr>
+        <tr>
+            <th>Radice</th>
+            <td>{{ config.root_type }}</td>
+        </tr>
+        {% if config.root_dimensions %}
+        <tr>
+            <th>Dimensioni Radice</th>
+            <td>
+                {% for key, val in config.root_dimensions.items() %}
+                {{ key }}: <strong>{{ val }} cm</strong>{% if not loop.last %} | {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+        {% endif %}
+    </table>
+
+    <h2>Terreno e Sesto</h2>
+    <table>
+        <tr>
+            <th>Tipologia Terreno</th>
+            <td>{{ config.soil_type }}</td>
+        </tr>
+        <tr>
+            <th>Disposizione File</th>
+            <td>{{ config.row_type }}</td>
+        </tr>
+        {% if config.layout_details %}
+        <tr>
+            <th>Dettagli Sesto</th>
+            <td>
+                IF (Interfila): <strong>{{ config.layout_details.IF }} cm</strong><br>
+                IP (Interpianta): <strong>{{ config.layout_details.IP }} cm</strong>
+                {% if config.layout_details.IB %} | IB: <strong>{{ config.layout_details.IB }} cm</strong>{% endif %}
+            </td>
+        </tr>
+        {% endif %}
+        <tr>
+            <th>Baulatura</th>
+            <td>
+                {% if config.is_raised_bed %}
+                <strong>Sì</strong> <span style="color:#666; font-size:9pt;">(AT: {{ config.raised_bed_details.AT }},
+                    LT: {{ config.raised_bed_details.LT }}, IT: {{ config.raised_bed_details.IT }})</span>
+                {% else %}No{% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th>Pacciamatura</th>
+            <td>
+                {% if config.is_mulch %}
+                <strong>Sì</strong> (Telo: {{ config.mulch_details.LP }} cm)
+                {% else %}No{% endif %}
+            </td>
+        </tr>
+    </table>
+
+    <h2>Macchina e Accessori</h2>
+    <table>
+        <tr>
+            <th>Trattore (Potenza)</th>
+            <td><strong>{{ config.tractor_hp }} HP</strong></td>
+        </tr>
+
+        {% if config.accessories_primary and config.accessories_primary|length > 0 %}
+        <tr>
+            <th>Accessori Primari</th>
+            <td>
+                {% for acc in config.accessories_primary %}{% if acc != "Nessuno" %}{{ acc }}<br>{% endif %}{% endfor %}
+            </td>
+        </tr>
+        {% endif %}
+
+        {% if config.accessories_secondary and config.accessories_secondary|length > 0 %}
+        <tr>
+            <th>Accessori Secondari</th>
+            <td>
+                {% for acc in config.accessories_secondary %}{% if acc != "Nessuno" %}{{ acc }}<br>{% endif %}{% endfor
+                %}
+            </td>
+        </tr>
+        {% endif %}
+
+        {% if config.accessories_element and config.accessories_element|length > 0 %}
+        <tr>
+            <th>Accessori Elemento</th>
+            <td>
+                {% for acc in config.accessories_element %}{% if acc != "Nessuno" %}{{ acc }}<br>{% endif %}{% endfor %}
+            </td>
+        </tr>
+        {% endif %}
+    </table>
+
+    {% if config.user_notes and config.user_notes != 'No' %}
+    <h2>Note Cliente</h2>
+    <p style="font-style: italic;">"{{ config.user_notes }}"</p>
+    {% endif %}
+
+    <div class="footer-info">
+        <p>Spapperi NT S.r.l. | Via Delle Industrie, 12 - 06018 Città di Castello (PG) | www.spapperi.com</p>
+    </div>
+
 </body>
 
 </html>

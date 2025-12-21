@@ -3,120 +3,56 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Preventivo Spapperi</title>
     <style>
         body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            background-color: #f4f4f5;
+            font-family: 'Helvetica Now', 'Inter', Helvetica, Arial, sans-serif;
+            background-color: #ffffff;
             margin: 0;
-            padding: 0;
-            color: #333;
-            line-height: 1.6;
+            padding: 20px;
+            color: #000000;
+            line-height: 1.5;
         }
 
         .container {
             max-width: 600px;
             margin: 0 auto;
-            background-color: #ffffff;
-            border-radius: 8px;
-            overflow: hidden;
-            margin-top: 40px;
-            margin-bottom: 40px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
 
         .header {
-            background-color: #1a1a1a;
-            padding: 30px;
-            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #d20a10;
+            margin-bottom: 30px;
         }
 
-        .header h1 {
-            color: #ffffff;
-            margin: 0;
-            font-size: 24px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .header-bar {
-            height: 4px;
-            background-color: #d20a10;
-            width: 100%;
+        .header img {
+            max-width: 150px;
+            height: auto;
         }
 
         .content {
-            padding: 40px;
+            font-size: 16px;
         }
 
         .greeting {
-            font-size: 18px;
-            font-weight: bold;
+            font-weight: 700;
             margin-bottom: 20px;
-            color: #111;
-        }
-
-        .feature-box {
-            background-color: #f8f9fa;
-            border-left: 4px solid #d20a10;
-            padding: 20px;
-            margin: 25px 0;
-        }
-
-        .feature-title {
-            font-weight: bold;
-            color: #d20a10;
-            text-transform: uppercase;
-            font-size: 12px;
-            margin-bottom: 5px;
-        }
-
-        .feature-value {
-            font-size: 16px;
-            font-weight: bold;
-            color: #1a1a1a;
-        }
-
-        .button {
-            display: inline-block;
-            background-color: #d20a10;
-            color: #ffffff;
-            text-decoration: none;
-            padding: 12px 25px;
-            border-radius: 4px;
-            font-weight: bold;
-            margin-top: 20px;
         }
 
         .footer {
-            background-color: #f4f4f5;
-            padding: 20px;
-            text-align: center;
+            margin-top: 40px;
             font-size: 12px;
-            color: #888;
+            color: #666;
             border-top: 1px solid #eee;
+            padding-top: 20px;
         }
 
-        .checklist {
-            margin: 20px 0;
-            padding: 0;
-            list-style: none;
-        }
-
-        .checklist li {
+        ul {
             padding-left: 20px;
-            position: relative;
-            margin-bottom: 10px;
-            color: #555;
         }
 
-        .checklist li:before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: #d20a10;
-            font-weight: bold;
+        li {
+            margin-bottom: 5px;
         }
     </style>
 </head>
@@ -124,40 +60,31 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Spapperi</h1>
+            <img src="cid:logo" alt="Spapperi">
         </div>
-        <div class="header-bar"></div>
 
         <div class="content">
             <p class="greeting">Gentile Cliente,</p>
 
-            <p>Grazie per aver scelto il configuratore intelligente Spapperi. In data odierna abbiamo elaborato la tua
-                richiesta di configurazione.</p>
+            <p>Di seguito trovi il riepilogo della tua configurazione per il modello <strong>TC12AM</strong>.</p>
 
-            <div class="feature-box">
-                <div class="feature-title">Riepilogo Configurazione</div>
-                <div class="feature-value">Modello TC12AM &mdash; {{ crop_type }}</div>
-            </div>
-
-            <p>In allegato a questa email troverai:</p>
-            <ul class="checklist">
-                <li><strong>Report Tecnico (PDF)</strong>: Dettagli completi della tua configurazione, sesto d'impianto
-                    e accessori.</li>
-                <li><strong>Preventivo Commerciale (PDF)</strong>: Offerta economica dettagliata valida per 30 giorni.
-                </li>
+            <p>In allegato:</p>
+            <ul>
+                <li><strong>Report Tecnico</strong>: Dettagli completi della configurazione.</li>
+                <li><strong>Preventivo Commerciale</strong>: Offerta economica.</li>
             </ul>
 
-            <p>Il nostro team tecnico rimane a tua completa disposizione per approfondire la soluzione proposta.</p>
+            <p>Il nostro team commerciale è a tua disposizione per finalizzare l'ordine o chiarire eventuali dubbi.</p>
 
             <p style="margin-top: 30px;">
                 Cordiali Saluti,<br>
-                <strong>Spapperi Team</strong>
+                <strong>Team Spapperi</strong>
             </p>
         </div>
 
         <div class="footer">
-            &copy; 2025 Spapperi S.r.l. - Via Delle Industrie, 12 - Città di Castello (PG)<br>
-            <a href="https://www.spapperi.com" style="color: #666; text-decoration: underline;">www.spapperi.com</a>
+            Spapperi NT S.r.l. - Via Delle Industrie, 12 - Città di Castello (PG)<br>
+            <a href="https://www.spapperi.com" style="color: #000; text-decoration: none;">www.spapperi.com</a>
         </div>
     </div>
 </body>
