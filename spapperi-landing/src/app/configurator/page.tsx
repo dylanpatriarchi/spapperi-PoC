@@ -20,6 +20,7 @@ export default function ConfiguratorPage() {
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [conversationId, setConversationId] = useState<string | null>(null);
+    const [isGeneratingReport, setIsGeneratingReport] = useState(false);
     const [selectedCheckboxes, setSelectedCheckboxes] = useState<string[]>([]);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -36,7 +37,7 @@ export default function ConfiguratorPage() {
     // Auto-scroll to latest message
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages, isLoading]);
+    }, [messages, isLoading, isGeneratingReport]);
 
     const loadExistingConversation = async (convId: string) => {
         // Auto-consent and start chat if conversation exists
@@ -147,6 +148,21 @@ export default function ConfiguratorPage() {
         const userMsg = inputValue;
         setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
         setInputValue('');
+
+        // Detect if we should show the generation progress bar
+        // Heuristic: If previous message asked for email/vat (Phase 6 trigger)
+        const lastMsg = messages[messages.length - 1];
+        const isFinalPhase = lastMsg && (lastMsg.role === 'assistant' || lastMsg.role === 'ai') && (
+            lastMsg.text.toLowerCase().includes('email') ||
+            lastMsg.text.toLowerCase().includes('partita iva') ||
+            lastMsg.text.toLowerCase().includes('recapiti') ||
+            lastMsg.text.toLowerCase().includes('perfetto')
+        );
+
+        if (isFinalPhase) {
+            setIsGeneratingReport(true);
+        }
+
         setIsLoading(true);
 
         try {
@@ -183,6 +199,7 @@ export default function ConfiguratorPage() {
             setMessages(prev => [...prev, { role: 'assistant', text: "Mi dispiace, c'è stato un problema di comunicazione con il server." }]);
         } finally {
             setIsLoading(false);
+            setIsGeneratingReport(false);
         }
     };
 
@@ -428,33 +445,57 @@ export default function ConfiguratorPage() {
                                 </motion.div>
                             ))}
 
-                            {/* Typing Indicator */}
+                            {/* Loading State: Progress Bar OR Typing Indicator */}
                             {isLoading && (
                                 <motion.div
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0 }}
-                                    className="flex justify-start"
+                                    className="flex justify-start w-full"
                                 >
-                                    <div className="bg-gray-100 p-6 rounded-3xl rounded-bl-none">
-                                        <div className="flex gap-1.5">
-                                            <motion.div
-                                                animate={{ y: [0, -8, 0] }}
-                                                transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
-                                                className="w-2.5 h-2.5 bg-gray-400 rounded-full"
-                                            />
-                                            <motion.div
-                                                animate={{ y: [0, -8, 0] }}
-                                                transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
-                                                className="w-2.5 h-2.5 bg-gray-400 rounded-full"
-                                            />
-                                            <motion.div
-                                                animate={{ y: [0, -8, 0] }}
-                                                transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
-                                                className="w-2.5 h-2.5 bg-gray-400 rounded-full"
-                                            />
+                                    {isGeneratingReport ? (
+                                        /* Premium Progress Bar UI for Final Generation */
+                                        <div className="bg-white border border-gray-100 shadow-md p-6 rounded-3xl rounded-bl-none w-full max-w-md">
+                                            <div className="flex items-center gap-4 mb-4">
+                                                <div className="animate-spin text-spapperi-red">
+                                                    <Robot size={24} weight="duotone" />
+                                                </div>
+                                                <span className="font-bold text-spapperi-black uppercase tracking-wider text-sm">
+                                                    Generazione Configurazione
+                                                </span>
+                                            </div>
+                                            <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                                <motion.div
+                                                    className="h-full bg-spapperi-red"
+                                                    initial={{ width: "0%" }}
+                                                    animate={{ width: "100%" }}
+                                                    transition={{ duration: 8, ease: "easeInOut" }}
+                                                />
+                                            </div>
+                                            <p className="text-xs text-gray-400 mt-3 font-medium">L'AI sta elaborando il report tecnico e il preventivo...</p>
                                         </div>
-                                    </div>
+                                    ) : (
+                                        /* Standard Typing Indicator */
+                                        <div className="bg-gray-100 p-6 rounded-3xl rounded-bl-none">
+                                            <div className="flex gap-1.5">
+                                                <motion.div
+                                                    animate={{ y: [0, -8, 0] }}
+                                                    transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
+                                                    className="w-2.5 h-2.5 bg-gray-400 rounded-full"
+                                                />
+                                                <motion.div
+                                                    animate={{ y: [0, -8, 0] }}
+                                                    transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
+                                                    className="w-2.5 h-2.5 bg-gray-400 rounded-full"
+                                                />
+                                                <motion.div
+                                                    animate={{ y: [0, -8, 0] }}
+                                                    transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
+                                                    className="w-2.5 h-2.5 bg-gray-400 rounded-full"
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
                                 </motion.div>
                             )}
 
@@ -469,12 +510,14 @@ export default function ConfiguratorPage() {
                                 onChange={(e) => setInputValue(e.target.value)}
                                 onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
                                 placeholder="Scrivi qui..."
-                                className="w-full bg-white border-2 border-gray-100 rounded-full py-6 pl-8 pr-20 text-xl focus:outline-none focus:border-spapperi-red focus:shadow-xl transition-all"
+                                disabled={isLoading}
+                                className="w-full bg-white border-2 border-gray-100 rounded-full py-6 pl-8 pr-20 text-xl focus:outline-none focus:border-spapperi-red focus:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                 autoFocus
                             />
                             <button
                                 onClick={sendMessage}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 w-12 h-12 bg-spapperi-black text-white rounded-full flex items-center justify-center hover:bg-spapperi-red transition-colors"
+                                disabled={isLoading}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 w-12 h-12 bg-spapperi-black text-white rounded-full flex items-center justify-center hover:bg-spapperi-red transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 <PaperPlaneRight size={24} weight="fill" />
                             </button>
