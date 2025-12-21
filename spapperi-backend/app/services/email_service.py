@@ -36,30 +36,37 @@ class EmailService:
 
         # Add Logo as CID inline image
         logo_path = "/app/source/logo_spapperi.svg"
+        print(f"DEBUG EMAIL: Checking logo at {logo_path}, exists: {os.path.exists(logo_path)}")
         if os.path.exists(logo_path):
              with open(logo_path, "rb") as img:
                  logo_data = img.read()
-                 message.add_attachment(
+                 print(f"DEBUG EMAIL: Logo data size: {len(logo_data)} bytes")
+                 # Use add_related for inline images with CID
+                 message.add_related(
                      logo_data,
                      maintype="image",
                      subtype="svg+xml",
                      filename="logo_spapperi.svg",
-                     disposition="inline",
-                     headers={"Content-ID": "<logo>"}
+                     cid="logo"
                  )
+                 print("DEBUG EMAIL: Logo attached successfully")
 
         # Add PDF attachments
-        for path in attachment_paths:
+        print(f"DEBUG EMAIL: Processing {len(attachment_paths)} attachments: {attachment_paths}")
+        for i, path in enumerate(attachment_paths):
+            print(f"DEBUG EMAIL: Attachment {i}: {path}, exists: {os.path.exists(path)}")
             if os.path.exists(path):
                 filename = os.path.basename(path)
                 with open(path, "rb") as f:
                     file_data = f.read()
+                    print(f"DEBUG EMAIL: Attachment {i} ({filename}) size: {len(file_data)} bytes")
                     message.add_attachment(
                         file_data,
                         maintype="application",
                         subtype="pdf",
                         filename=filename
                     )
+                    print(f"DEBUG EMAIL: Attachment {i} ({filename}) attached successfully")
 
         try:
             await aiosmtplib.send(

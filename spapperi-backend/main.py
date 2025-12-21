@@ -190,32 +190,46 @@ async def chat(request: ChatRequest):
                     commercial_pdf = generate_commercial_proposal(config_data)
 
                     if commercial_pdf:
-                         # 4. Send Email
-                         print("DEBUG: STARTING EMAIL WORKFLOW - CODE UPDATED")
-                         from app.services.email_service import email_service
-                         from jinja2 import Environment, FileSystemLoader
-                         
-                         # Prepare email template
-                         email_subject = f"Preventivo Spapperi - Configurazione {config_data.get('id').hex[:8]}"
-                         
-                         template_env = Environment(loader=FileSystemLoader("/app/app/templates"))
-                         email_template = template_env.get_template("email_template.html")
-                         
-                         email_body = email_template.render(
-                             config=config_data,
-                             crop_type=config_data.get('crop_type', 'N/D')
-                         )
-                         
-                         result = await email_service.send_email_with_attachments(
-                             to_email=config_data["contact_email"],
-                             subject=email_subject,
-                             body=email_body,
-                             attachment_paths=[commercial_pdf, pdf_path] 
-                         )
+                        # 4. Send Email
+                        print("DEBUG: [1] STARTING EMAIL WORKFLOW")
+                        try:
+                            from app.services.email_service import email_service
+                            from jinja2 import Environment, FileSystemLoader
+                            print("DEBUG: [2] Imports successful")
+                            
+                            # Prepare email template
+                            email_subject = f"Preventivo Spapperi - Configurazione {config_data.get('id').hex[:8]}"
+                            print(f"DEBUG: [3] Subject defined: {email_subject}")
+                            
+                            template_env = Environment(loader=FileSystemLoader("/app/app/templates"))
+                            email_template = template_env.get_template("email_template.html")
+                            print("DEBUG: [4] Template loaded")
+                            
+                            email_body = email_template.render(
+                                config=config_data,
+                                crop_type=config_data.get('crop_type', 'N/D')
+                            )
+                            print("DEBUG: [5] Body rendered")
+                            
+                            print(f"DEBUG: [6] Sending to {config_data.get('contact_email')}")
+                            result = await email_service.send_email_with_attachments(
+                                to_email=config_data["contact_email"],
+                                subject=email_subject,
+                                body=email_body,
+                                attachment_paths=[commercial_pdf, pdf_path] 
+                            )
+                            print(f"DEBUG: [7] Email send result: {result}")
+                        except Exception as inner_err:
+                            print(f"DEBUG: CRITICAL ERROR INSIDE BLOCK: {repr(inner_err)}")
+                            import traceback
+                            traceback.print_exc()
+                            raise inner_err
+
                     else:
+                        print("DEBUG: Commercial PDF was None")
                         pass
                 except Exception as email_err:
-                    print(f"Error executing email workflow: {email_err}")
+                    print(f"Error executing email workflow WRAPPER: {repr(email_err)}")
                     import traceback
                     traceback.print_exc()
                     print(f"Error executing email workflow: {email_err}")
