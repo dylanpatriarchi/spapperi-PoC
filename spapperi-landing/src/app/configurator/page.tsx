@@ -278,71 +278,90 @@ export default function ConfiguratorPage() {
                         transition={{ duration: 0.6, ease: "circOut" }}
                         className="min-h-screen pt-32 md:pt-40 pb-12 flex flex-col px-6"
                     >
-                        <div className="max-w-2xl w-full mx-auto">
+                        <div className="max-w-5xl w-full mx-auto">
                             <Link href="/" className="inline-flex items-center gap-2 text-gray-400 hover:text-spapperi-red transition-colors mb-12 uppercase tracking-widest text-xs font-bold group">
                                 <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Torna alla Home
                             </Link>
 
-                            <div className="mb-12">
-                                <div className="w-16 h-16 bg-gray-50 rounded-xl flex items-center justify-center mb-8">
-                                    <Robot size={32} weight="duotone" className="text-spapperi-red" />
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 mb-16 items-start">
+                                <div>
+                                    <h1 className="text-5xl md:text-7xl font-heading font-bold tracking-tighter leading-[0.95] mb-8">
+                                        L'ingegneria<br />Spapperi,<br /><span className="text-spapperi-red">su misura per te.</span>
+                                    </h1>
+                                    <p className="text-xl text-spapperi-black font-light leading-relaxed max-w-lg text-justify md:text-left text-gray-600">
+                                        Un percorso guidato per analizzare le tue necessità operative e individuare la tecnologia più adatta alla tua azienda.
+                                    </p>
                                 </div>
-                                <h1 className="text-5xl md:text-7xl font-heading font-bold tracking-tighter leading-[0.9] mb-8">
-                                    Spapperi<br /><span className="text-spapperi-red">AI.</span>
-                                </h1>
-                                <p className="text-xl text-spapperi-black font-light leading-relaxed max-w-lg text-justify md:text-left">
-                                    Configura la tua macchina ideale dialogando con la nostra Intelligenza Artificiale.
-                                    Risparmia tempo e ottieni una soluzione su misura.
-                                </p>
+
+                                <div className="bg-gray-50 p-8 rounded-3xl border border-gray-100 relative overflow-hidden group hover:shadow-lg transition-shadow duration-500">
+                                    <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity duration-500">
+                                        <Robot size={120} weight="duotone" className="text-spapperi-black" />
+                                    </div>
+                                    <h3 className="font-heading font-bold text-xl mb-6 uppercase tracking-wider text-spapperi-black">Cosa otterrai</h3>
+                                    <ul className="space-y-6 relative z-10">
+                                        <li className="flex items-start gap-4">
+                                            <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center shrink-0 shadow-sm text-spapperi-red">
+                                                <span className="font-bold">1</span>
+                                            </div>
+                                            <div>
+                                                <h4 className="font-bold text-spapperi-black">Analisi Tecnica</h4>
+                                                <p className="text-sm text-gray-500 leading-relaxed mt-1">Valutazione delle specifiche del terreno e delle colture.</p>
+                                            </div>
+                                        </li>
+                                        <li className="flex items-start gap-4">
+                                            <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center shrink-0 shadow-sm text-spapperi-red">
+                                                <span className="font-bold">2</span>
+                                            </div>
+                                            <div>
+                                                <h4 className="font-bold text-spapperi-black">Configurazione Ideale</h4>
+                                                <p className="text-sm text-gray-500 leading-relaxed mt-1">Identificazione del macchinario e degli accessori ottimali.</p>
+                                            </div>
+                                        </li>
+                                        <li className="flex items-start gap-4">
+                                            <div className="w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center shrink-0 shadow-sm text-spapperi-red">
+                                                <span className="font-bold">3</span>
+                                            </div>
+                                            <div>
+                                                <h4 className="font-bold text-spapperi-black">Preventivo Immediato</h4>
+                                                <p className="text-sm text-gray-500 leading-relaxed mt-1">Download del report completo con costi e dettagli tecnici.</p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
 
-                            <div className="bg-white p-8 rounded-2xl border border-gray-200 mb-12 shadow-sm">
-                                <h3 className="font-heading font-bold text-lg mb-6 uppercase tracking-wider text-spapperi-black">Istruzioni</h3>
-                                <ul className="space-y-4 text-spapperi-black font-medium mb-8">
-                                    <li className="flex items-start gap-3">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-spapperi-red mt-2.5 shrink-0"></div>
-                                        <span>L'IA ti farà domande sulle tue esigenze (coltura, terreno, dimensioni).</span>
-                                    </li>
-                                    <li className="flex items-start gap-3">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-spapperi-red mt-2.5 shrink-0"></div>
-                                        <span>Potrai scaricare la configurazione finale in PDF.</span>
-                                    </li>
-                                </ul>
-
-                                <div className="flex items-start gap-4 pt-6 border-t border-gray-100">
-                                    <div className="relative flex items-center pt-1">
+                            <div className="flex flex-col md:flex-row items-center justify-between gap-8 bg-white p-8 rounded-3xl border border-gray-200 shadow-sm">
+                                <div className="flex items-start gap-4 max-w-md">
+                                    <div className="relative flex items-center pt-1 shrink-0">
                                         <input
                                             type="checkbox"
                                             id="gdpr"
                                             checked={hasConsented}
                                             onChange={(e) => setHasConsented(e.target.checked)}
-                                            className="peer h-5 w-5 cursor-pointer appearance-none rounded border-2 border-gray-300 transition-all checked:border-spapperi-red checked:bg-spapperi-red hover:border-spapperi-red"
+                                            className="peer h-6 w-6 cursor-pointer appearance-none rounded-lg border-2 border-gray-300 transition-all checked:border-spapperi-red checked:bg-spapperi-red hover:border-spapperi-red"
                                         />
                                         <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100 mt-0.5">
-                                            <CheckCircle size={12} weight="fill" />
+                                            <CheckCircle size={14} weight="fill" />
                                         </div>
-                                        {hasConsented && (
-                                            <CheckCircle size={20} weight="fill" className="absolute top-0.5 left-0 text-spapperi-red pointer-events-none" />
-                                        )}
                                     </div>
                                     <label htmlFor="gdpr" className="text-sm text-gray-500 hover:text-spapperi-black cursor-pointer select-none leading-relaxed transition-colors">
-                                        Accetto i <a href="#" className="font-bold underline text-spapperi-black hover:text-spapperi-red">Termini di Servizio</a> e la <a href="#" className="font-bold underline text-spapperi-black hover:text-spapperi-red">Privacy Policy</a>.
+                                        Per procedere, confermo di aver preso visione dei <a href="#" className="font-bold underline text-spapperi-black hover:text-spapperi-red">Termini di Servizio</a> e della <a href="#" className="font-bold underline text-spapperi-black hover:text-spapperi-red">Privacy Policy</a> di Spapperi NT S.r.l.
                                     </label>
                                 </div>
-                            </div>
 
-                            <button
-                                onClick={startChat}
-                                disabled={!hasConsented}
-                                className={`group flex items-center gap-3 px-8 py-4 text-sm font-bold uppercase tracking-widest rounded-full transition-all duration-300
-                                    ${hasConsented
-                                        ? 'bg-spapperi-black text-white hover:bg-spapperi-red hover:gap-5'
-                                        : 'bg-gray-100 text-gray-300 cursor-not-allowed'
-                                    }`}
-                            >
-                                Avvia Chat
-                                <PaperPlaneRight size={18} weight="fill" />
-                            </button>
+                                <button
+                                    onClick={startChat}
+                                    disabled={!hasConsented}
+                                    className={`group flex items-center gap-3 px-10 py-5 text-sm font-bold uppercase tracking-widest rounded-full transition-all duration-300 shrink-0
+                                        ${hasConsented
+                                            ? 'bg-spapperi-black text-white hover:bg-spapperi-red hover:gap-5 hover:shadow-xl hover:scale-105 active:scale-95'
+                                            : 'bg-gray-100 text-gray-300 cursor-not-allowed'
+                                        }`}
+                                >
+                                    Inizia Configurazione
+                                    <PaperPlaneRight size={18} weight="fill" />
+                                </button>
+                            </div>
                         </div>
                     </motion.div>
                 ) : (
